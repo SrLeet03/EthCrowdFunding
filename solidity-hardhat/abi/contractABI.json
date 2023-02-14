@@ -1,0 +1,220 @@
+[
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "campaginGoal",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "minContribution",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "nonpayable",
+        "type": "constructor"
+    },
+    { "inputs": [], "name": "Campagin__NotEnoughToWithdraw", "type": "error" },
+    { "inputs": [], "name": "Campagin__NotOwner", "type": "error" },
+    {
+        "inputs": [],
+        "name": "Campagin__RequestIsUnderProcess",
+        "type": "error"
+    },
+    { "inputs": [], "name": "Campagin__RequestRejected", "type": "error" },
+    { "inputs": [], "name": "Campagin__SendMinFund", "type": "error" },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": false,
+                "internalType": "address",
+                "name": "from",
+                "type": "address"
+            },
+            {
+                "indexed": false,
+                "internalType": "uint256",
+                "name": "fundedAmount",
+                "type": "uint256"
+            }
+        ],
+        "name": "FundTransfered",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": false,
+                "internalType": "uint256",
+                "name": "amountWithdrawed",
+                "type": "uint256"
+            }
+        ],
+        "name": "FundWithdrawed",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": false,
+                "internalType": "address",
+                "name": "from",
+                "type": "address"
+            },
+            {
+                "indexed": false,
+                "internalType": "address",
+                "name": "to",
+                "type": "address"
+            }
+        ],
+        "name": "OwnershipTransfered",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": false,
+                "internalType": "contract Stake",
+                "name": "request",
+                "type": "address"
+            }
+        ],
+        "name": "RequestApplied",
+        "type": "event"
+    },
+    {
+        "inputs": [],
+        "name": "contribute",
+        "outputs": [],
+        "stateMutability": "payable",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "getContributors",
+        "outputs": [
+            { "internalType": "address[]", "name": "", "type": "address[]" }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "contributerAddress",
+                "type": "address"
+            }
+        ],
+        "name": "getContributorsFundAmount",
+        "outputs": [
+            { "internalType": "uint256", "name": "", "type": "uint256" }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "getCurrentFundInContract",
+        "outputs": [
+            { "internalType": "uint256", "name": "", "type": "uint256" }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "contributer",
+                "type": "address"
+            }
+        ],
+        "name": "getFundByAddress",
+        "outputs": [
+            { "internalType": "uint256", "name": "", "type": "uint256" }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "getOwnerAddress",
+        "outputs": [
+            { "internalType": "address", "name": "", "type": "address" }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "getTotalFund",
+        "outputs": [
+            { "internalType": "uint256", "name": "", "type": "uint256" }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "durationOfRequest",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "withdrawAmount",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "minContributionToVote",
+                "type": "uint256"
+            }
+        ],
+        "name": "makeRequest",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            { "internalType": "address", "name": "", "type": "address" }
+        ],
+        "name": "s_contributerFund",
+        "outputs": [
+            { "internalType": "uint256", "name": "", "type": "uint256" }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            { "internalType": "address", "name": "to", "type": "address" }
+        ],
+        "name": "transferOwnerShip",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "requestIndex",
+                "type": "uint256"
+            }
+        ],
+        "name": "withdraw",
+        "outputs": [],
+        "stateMutability": "payable",
+        "type": "function"
+    }
+]
