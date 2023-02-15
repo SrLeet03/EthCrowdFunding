@@ -3,9 +3,14 @@
 pragma solidity ^0.8.8;
 
 library withdrawLib {
-    enum withdrawPermission {
+    enum permission {
         PROCESSING,
         ACCEPTED,
         REJECTED
+    }
+
+    enum vote {
+        ACCEPT,
+        REJECT
     }
 }

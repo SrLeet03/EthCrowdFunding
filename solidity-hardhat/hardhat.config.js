@@ -7,6 +7,7 @@ require("hardhat-contract-sizer")
 require("dotenv").config()
 
 const GOERLI_RPC_URL = process.env.GOERLI_RPC_URL
+const MANTLE_RPC_URL = process.env.MANTLE_RPC_URL
 
 const PRIVATE_KEY1 = process.env.PRIVATE_KEY1
 const PRIVATE_KEY2 = process.env.PRIVATE_KEY2
@@ -28,6 +29,11 @@ module.exports = {
             accounts: [PRIVATE_KEY1, PRIVATE_KEY2],
             saveDeployments: true,
             chainId: 5,
+        },
+        mantle: {
+            url: MANTLE_RPC_URL,
+            accounts: [PRIVATE_KEY1, PRIVATE_KEY2],
+            chainId: 5001,
         },
     },
     namedAccounts: {

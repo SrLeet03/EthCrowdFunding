@@ -11,77 +11,69 @@ import "./Library.sol";
 // End the event
 // Send the result and withdraw if needed
 
+error Stake__DeadlineNotReached();
+error Stake__DeadLineReached();
+
 contract Stake {
-    enum vote {
-        ACCEPT,
-        REJECT,
-        NEUTRAL
+    struct Request {
+        mapping(address => bool) contributersVoted;
+        uint256 minContributionToVote;
+        uint256 durationOfRequest;
+        uint256 requestedAmount;
+        uint256 requestedTime;
+        // Voting variables
+        uint256 totalAcceptVote;
+        uint256 totalRejectVote;
+        // status
+        withdrawLib.permission currentStatus;
+        bool amountRecieved;
     }
 
-    mapping(address => bool) private s_contributersVoted;
-    address private immutable i_campaginAddress;
-    uint256 private immutable i_minContributionToVote;
-    uint256 private s_durationOfRequest;
-    uint256 private s_requestedAmount;
-    uint256 private s_requestedTime;
-
-    uint256 private s_totalNeutralVote;
-    uint256 private s_totalAcceptVote;
-    uint256 private s_totalRejectVote;
-
-    withdrawLib.withdrawPermission private s_permission;
-
-    bool private s_recieved;
-
-    constructor(
-        address campaginAddress,
-        uint256 duration,
-        uint256 requestedAmount,
-        uint256 minContributionToVote
-    ) {
-        i_campaginAddress = campaginAddress;
-        i_minContributionToVote = minContributionToVote;
-        s_durationOfRequest = duration;
-        s_permission = withdrawLib.withdrawPermission.PROCESSING;
-        s_requestedAmount = requestedAmount;
-        s_requestedTime = block.timestamp;
-        s_recieved = false;
-    }
-
-    modifier deadlineReached(bool requireReached) {
-        uint256 timeRemaining = timeLeft();
+    modifier deadlineReached(Request storage request, bool requireReached) {
+        uint256 timeRemaining = timeLeft(request);
         if (requireReached) {
-            require(timeRemaining == 0, "Deadline is not reached yet");
+            if (timeRemaining > 0) {
+                revert Stake__DeadlineNotReached();
+            }
+            // require(timeRemaining == 0, "Deadline has not reached");
         } else {
-            require(timeRemaining > 0, "Deadline is already reached");
+            if (timeRemaining == 0) {
+                revert Stake__DeadLineReached();
+            }
+            // require(timeRemaining > 0, "Deadline is already reached");
         }
         _;
     }
 
     // Add a modifier if all the contributers voted
 
-    function stake(vote myVote) public deadlineReached(false) {
-        if (myVote == vote.ACCEPT) {
-            s_totalAcceptVote += 1;
-        } else if (myVote == vote.NEUTRAL) {
-            s_totalNeutralVote += 1;
+    function stake(
+        Request storage request,
+        withdrawLib.vote myVote
+    ) internal deadlineReached(request, false) {
+        if (myVote == withdrawLib.vote.ACCEPT) {
+            request.totalAcceptVote += 1;
         } else {
-            s_totalRejectVote;
+            request.totalRejectVote += 1;
         }
     }
 
     // Make a function that gets call for chainlink
 
-    function result() public deadlineReached(true) {
-        if (s_totalAcceptVote > s_totalRejectVote) {
-            s_permission = withdrawLib.withdrawPermission.ACCEPTED;
+    function result(
+        Request storage request
+    ) internal deadlineReached(request, true) {
+        if (request.totalAcceptVote > request.totalRejectVote) {
+            request.currentStatus = withdrawLib.permission.ACCEPTED;
         } else {
-            s_permission = withdrawLib.withdrawPermission.REJECTED;
+            request.currentStatus = withdrawLib.permission.REJECTED;
         }
     }
 
-    function timeLeft() public view returns (uint256 timeleft) {
-        uint256 deadline = s_requestedTime + s_durationOfRequest;
+    function timeLeft(
+        Request storage request
+    ) internal view returns (uint256 timeleft) {
+        uint256 deadline = request.requestedTime + request.durationOfRequest;
         if (block.timestamp >= deadline) {
             return 0;
         } else {
@@ -89,19 +81,31 @@ contract Stake {
         }
     }
 
-    function getPermission()
-        public
-        view
-        returns (withdrawLib.withdrawPermission)
-    {
-        return s_permission;
+    function getCurrentStatus(
+        Request storage request
+    ) internal view returns (withdrawLib.permission) {
+        return request.currentStatus;
     }
 
-    function getRequestedAmount() public view returns (uint256) {
-        return s_requestedAmount;
+    function getRequestedAmount(
+        Request storage request
+    ) internal view returns (uint256) {
+        return request.requestedAmount;
     }
 
-    function setRecieved() public {
-        s_recieved = true;
+    function setRecieved(Request storage request) internal {
+        request.amountRecieved = true;
+    }
+
+    function getMinimumContribution(
+        Request storage request
+    ) internal view returns (uint256) {
+        return request.minContributionToVote;
+    }
+
+    function getPermissionStatus(
+        Request storage request
+    ) internal view returns (withdrawLib.permission) {
+        return request.currentStatus;
     }
 }
