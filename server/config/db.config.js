@@ -1,3 +1,3 @@
 module.exports = {
-    url: "mongodb+srv://testdatabase:testdatabase@cluster0.frqbpzd.mongodb.net/?retryWrites=true&w=majority"
+    url: `mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@cluster0.frqbpzd.mongodb.net/?retryWrites=true&w=majority`
 };
