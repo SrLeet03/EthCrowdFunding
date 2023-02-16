@@ -19,13 +19,27 @@ module.exports = async (hre) => {
     const chainId = network.config.chainId
 
     const args = [
-        ethers.utils.parseEther(CAMPAGIN_GOAL1),
-        ethers.utils.parseEther(MINIMUM_CONTRIBUTION),
+        // ethers.utils.parseEther(CAMPAGIN_GOAL2),
+        // ethers.utils.parseEther(MINIMUM_CONTRIBUTION),
     ]
 
     log("----------")
     log(`deployer ${deployer2}`)
     log("----------")
+
+    const library = await deploy("CampaignLib", {
+        from: deployer2,
+        args: args,
+        log: true,
+        waitConfirmation: BLOCK_CONFORMATION,
+    })
+
+    const stake = await deploy("Stake", {
+        from: deployer2,
+        args: args,
+        log: true,
+        waitConfirmation: BLOCK_CONFORMATION,
+    })
 
     const crowdFunding = await deploy("CrowdFunding", {
         from: deployer2,
@@ -35,11 +49,15 @@ module.exports = async (hre) => {
     })
 
     log("------------------------------------")
-    log(`address of the contract ${crowdFunding.address}`)
+    log(`address of the library ${library.address}`)
+    log(`address of the stake ${stake.address}`)
+    log(`address of the crowdfunding ${crowdFunding.address}`)
     log("------------------------------------")
 
     if (!developmentChains.includes(network.name)) {
         log("Verifying...")
+        await verify(library.address, args)
+        await verify(stake.address, args)
         await verify(crowdFunding.address, args)
     }
 }

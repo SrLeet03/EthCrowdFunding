@@ -2,7 +2,7 @@
 
 pragma solidity ^0.8.8;
 
-import "./Library.sol";
+import "./CampaignLib.sol";
 
 // TO DO
 //
@@ -25,7 +25,7 @@ contract Stake {
         uint256 totalAcceptVote;
         uint256 totalRejectVote;
         // status
-        withdrawLib.permission currentStatus;
+        CampaignLib.permission currentStatus;
         bool amountRecieved;
     }
 
@@ -49,9 +49,9 @@ contract Stake {
 
     function stake(
         Request storage request,
-        withdrawLib.vote myVote
+        CampaignLib.vote myVote
     ) internal deadlineReached(request, false) {
-        if (myVote == withdrawLib.vote.ACCEPT) {
+        if (myVote == CampaignLib.vote.ACCEPT) {
             request.totalAcceptVote += 1;
         } else {
             request.totalRejectVote += 1;
@@ -64,9 +64,9 @@ contract Stake {
         Request storage request
     ) internal deadlineReached(request, true) {
         if (request.totalAcceptVote > request.totalRejectVote) {
-            request.currentStatus = withdrawLib.permission.ACCEPTED;
+            request.currentStatus = CampaignLib.permission.ACCEPTED;
         } else {
-            request.currentStatus = withdrawLib.permission.REJECTED;
+            request.currentStatus = CampaignLib.permission.REJECTED;
         }
     }
 
@@ -83,7 +83,7 @@ contract Stake {
 
     function getCurrentStatus(
         Request storage request
-    ) internal view returns (withdrawLib.permission) {
+    ) internal view returns (CampaignLib.permission) {
         return request.currentStatus;
     }
 
@@ -105,7 +105,7 @@ contract Stake {
 
     function getPermissionStatus(
         Request storage request
-    ) internal view returns (withdrawLib.permission) {
+    ) internal view returns (CampaignLib.permission) {
         return request.currentStatus;
     }
 }

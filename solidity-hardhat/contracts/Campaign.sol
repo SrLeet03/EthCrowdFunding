@@ -4,16 +4,16 @@ pragma solidity ^0.8.8;
 
 import "./Stake.sol";
 
-error Campagin__SendMinFund();
-error Campagin__NotOwner();
-error Campagin__NotEnoughToWithdraw();
-error Campagin__RequestIsUnderProcess();
-error Campagin__RequestRejected();
-error Campagin__NotAnEligiableContributer();
+error Campaign__SendMinFund();
+error Campaign__NotOwner();
+error Campaign__NotEnoughToWithdraw();
+error Campaign__RequestIsUnderProcess();
+error Campaign__RequestRejected();
+error Campaign__NotAnEligiableContributer();
 
-contract Campagin is Stake {
+contract Campaign is Stake {
     mapping(address => uint256) public s_contributerFund;
-    uint256 private immutable i_campaginGoal;
+    uint256 private immutable i_campaignGoal;
     uint256 private immutable i_minContribution;
     uint256 private s_TotalFunded;
     address private s_owner;
@@ -26,15 +26,15 @@ contract Campagin is Stake {
     event RequestApplied(uint256 requestIndex);
     event RequestResult(uint256 requestIndex, bool approved);
 
-    constructor(uint256 campaginGoal, uint256 minContribution) {
-        i_campaginGoal = campaginGoal;
+    constructor(uint256 campaignGoal, uint256 minContribution) {
+        i_campaignGoal = campaignGoal;
         i_minContribution = minContribution;
         s_owner = msg.sender;
     }
 
     modifier onlyOwner() {
         if (msg.sender != s_owner) {
-            revert Campagin__NotOwner();
+            revert Campaign__NotOwner();
         }
         _;
     }
@@ -42,15 +42,15 @@ contract Campagin is Stake {
     modifier permissionIssued(uint256 requestIndex) {
         if (
             getPermissionStatus(s_requests[requestIndex]) ==
-            withdrawLib.permission.PROCESSING
+            CampaignLib.permission.PROCESSING
         ) {
-            revert Campagin__RequestIsUnderProcess();
+            revert Campaign__RequestIsUnderProcess();
         }
         if (
             getPermissionStatus(s_requests[requestIndex]) ==
-            withdrawLib.permission.REJECTED
+            CampaignLib.permission.REJECTED
         ) {
-            revert Campagin__RequestRejected();
+            revert Campaign__RequestRejected();
         }
         _;
     }
@@ -60,14 +60,14 @@ contract Campagin is Stake {
         address contributer
     ) {
         if (s_contributerFund[contributer] < minContribution) {
-            revert Campagin__NotAnEligiableContributer();
+            revert Campaign__NotAnEligiableContributer();
         }
         _;
     }
 
     function contribute() public payable {
         if (msg.value < i_minContribution) {
-            revert Campagin__SendMinFund();
+            revert Campaign__SendMinFund();
         }
         (bool send, ) = address(this).call{value: msg.value}("");
 
@@ -83,7 +83,7 @@ contract Campagin is Stake {
     ) public payable onlyOwner permissionIssued(requestIndex) {
         uint256 amount = getRequestedAmount(s_requests[requestIndex]);
         if (address(this).balance < amount) {
-            revert Campagin__NotEnoughToWithdraw();
+            revert Campaign__NotEnoughToWithdraw();
         }
         (bool sent, ) = s_owner.call{value: amount}("");
         setRecieved(s_requests[requestIndex]);
@@ -105,14 +105,11 @@ contract Campagin is Stake {
         request.totalAcceptVote = 0;
         request.totalRejectVote = 0;
         request.amountRecieved = false;
-        request.currentStatus = withdrawLib.permission.PROCESSING;
+        request.currentStatus = CampaignLib.permission.PROCESSING;
         emit RequestApplied(s_requests.length);
     }
 
-    function stakeInRequest(
-        uint256 requestId,
-        withdrawLib.vote myVote
-    ) internal {
+    function stakeInRequest(uint256 requestId, CampaignLib.vote myVote) public {
         stake(s_requests[requestId], myVote);
     }
 
@@ -122,7 +119,7 @@ contract Campagin is Stake {
         emit RequestResult(
             requestIndex,
             getPermissionStatus(s_requests[requestIndex]) ==
-                withdrawLib.permission.ACCEPTED
+                CampaignLib.permission.ACCEPTED
         );
     }
 
@@ -161,7 +158,7 @@ contract Campagin is Stake {
         return s_contributerFund[contributerAddress];
     }
 
-    function getCampaginGoal() public view returns (uint256) {
-        return i_campaginGoal;
+    function getCampaignGoal() public view returns (uint256) {
+        return i_campaignGoal;
     }
 }
