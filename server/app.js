@@ -1,18 +1,19 @@
 const express = require("express");
 const cors = require("cors");
-
 const app = express();
+const indexRouter = require("./routes/index");
+const campaignRoutes = require('./routes/campaignRoutes');
+require("dotenv").config()
+
 
 var corsOptions = {
-  origin: "http://localhost:8081"
+  origin: "http://localhost:8080"
 };
 
 app.use(cors(corsOptions));
 
-// parse requests of content-type - application/json
 app.use(express.json());
 
-// parse requests of content-type - application/x-www-form-urlencoded
 app.use(express.urlencoded({ extended: true }));
 
 const db = require("./models");
@@ -29,14 +30,11 @@ db.mongoose
     process.exit();
   });
 
-// simple route
-app.get("/", (req, res) => {
-  res.json({ message: "application starts here" });
-});
+
+app.use("/", indexRouter);
+app.use("/campaign", campaignRoutes);
 
 
-
-// set port, listen for requests
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}.`);
