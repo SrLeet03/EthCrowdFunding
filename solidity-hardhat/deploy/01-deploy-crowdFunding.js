@@ -36,20 +36,20 @@ module.exports = async (hre) => {
     // })
 
     const crowdFundingContract = await deploy("CrowdFunding", {
-        from: deployer1,
+        from: deployer2,
         args: [],
         log: true,
         waitConfirmation: BLOCK_CONFORMATION,
     })
 
     const campaignContract = await deploy("Campaign", {
-        from: deployer1,
+        from: deployer2,
         args: [CAMPAGIN_GOAL, MINIMUM_CONTRIBUTION],
         log: true,
         waitConfirmation: BLOCK_CONFORMATION,
     })
 
-    const contract = await ethers.getContract("CrowdFunding", deployer1)
+    const contract = await ethers.getContract("CrowdFunding")
     let addressSigner = await ethers.getSigner(deployer2)
     let crowdFunding = contract.connect(addressSigner)
 
