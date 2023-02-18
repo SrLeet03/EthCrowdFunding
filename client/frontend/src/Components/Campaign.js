@@ -1,19 +1,30 @@
 import { useEffect, useState } from "react"
+import { campaignAbi } from "../Constants"
 import { ethers } from "ethers"
-import "./CrowdFunding"
-import CrowdFunding from "./CrowdFunding"
 
-export default function Campaign() {
+export default function Campaign(campaignAddress) {
     const provider = new ethers.providers.Web3Provider(window.ethereum)
     const signer = provider.getSigner()
     const { chainId } = provider.getNetwork()
 
     let contract
-    const getCampaignAddress = async(owner, campaignId) =>{
-        // get deployed address from CrowdFunding.js
-        contract = 
 
+    // ethers that the contributer decide to send
+
+    contract = new ethers.Contract(campaignAddress, campaignAbi, provider)
+
+    const Contribute = async (ethValueFromContributer) => {
+        const connectedContract = new ethers.Contract(
+            campaignAddress,
+            campaignAbi,
+            signer
+        )
+
+        let txResponse = await connectedContract.contribute({
+            value: ethers.utils.parseEther(ethValueFromContributer),
+        })
+        const txReciept = await txResponse.wait(6)
+
+        console.log(`transection Recipt ${txReciept}`)
     }
-
-    const Contribute
 }

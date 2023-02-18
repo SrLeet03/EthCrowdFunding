@@ -1,7 +1,9 @@
-const contractAddresses = require("./contractAddress.json")
-const abi = require("./abi.json")
+const crowdFundingAddresses = require("./contractAddress.json")
+const crowdFundingAbi = require("./abi.json")
+const campaignAbi = require("./campaignAbi.json")
 
 module.exports = {
-    contractAddresses,
-    abi,
+    crowdFundingAddresses,
+    crowdFundingAbi,
+    campaignAbi,
 }

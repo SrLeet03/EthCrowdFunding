@@ -1,9 +1,6 @@
-import { contractAddresses, abi } from "../Constants" // dont export from moralis when using react
-// import { useMoralis, useWeb3Contract } from "react-moralis"
+import { crowdFundingAddresses, crowdFundingAbi } from "../Constants"
 import { useEffect, useState } from "react"
-// import { useNotification } from "web3uikit"
 import { ethers } from "ethers"
-const Moralis = require("moralis").default
 require("dotenv").config()
 
 export default function CrowdFunding() {
@@ -11,25 +8,24 @@ export default function CrowdFunding() {
     const signer = provider.getSigner()
     const { chainId } = provider._network.chainId
 
-    console.log(`chainid ${chainId}`)
-
     const crowdFindingAddress =
-        chainId in contractAddresses ? contractAddresses[chainId][0] : null
+        chainId in crowdFundingAddresses
+            ? crowdFundingAddresses[chainId][0]
+            : null
 
-    console.log(
-        `crowdFunding address from deploy output ${crowdFindingAddress}`
-    )
-
-    // Usual way
-
-    let contract
+    let contract, crowdFunding
     const connectContract = async () => {
-        contract = new ethers.Contract(crowdFindingAddress, abi, provider)
-        console.log(`The connected address ${contract.address}`)
+        contract = new ethers.Contract(
+            crowdFindingAddress,
+            crowdFundingAbi,
+            provider
+        )
     }
 
     const CreateCampaign = async (campaignGoal, minContribution) => {
-        const txResponse = await contract.createCampaign(
+        crowdFunding = await contract.connect(signer)
+
+        const txResponse = await crowdFunding.createCampaign(
             campaignGoal,
             minContribution
         )
@@ -37,33 +33,25 @@ export default function CrowdFunding() {
     }
 
     const GetCampaign = async (owner, campaignId) => {
-        const campaignAddress = await contract.getCampaign(owner, campaignId)
+        crowdFunding = await contract.connect(signer)
+
+        const campaignAddress = await crowdFunding.getCampaign(
+            owner,
+            campaignId
+        )
         return campaignAddress
     }
 
     const GetAllCampaignOfOwner = async (owner) => {
-        await contract.getAllCampaignOfOwner(owner)
+        crowdFunding = await contract.connect(signer)
+
+        await crowdFunding.getAllCampaignOfOwner(owner)
     }
 
-    //Using moralis
-    //
-    // const [campaignGoal, setCampaignGoal] = useState(0)
-    // const [minContribution, setMinContribution] = useState(0)
-    // const args = [campaignGoal, minContribution]
+    const GetTotalCampaignCreated = async () => {
+        crowdFunding = await contract.connect(signer)
 
-    // const CreateCampaign = (args) => {
-    //     const { runContractFunction: createContract } = useWeb3Contract({
-    //         abi: abi,
-    //         contractAddress: crowdFindingAddress,
-    //         functionName: "createContract",
-    //         params: {
-    //             args,
-    //         },
-    //     })
-    //     // console.log(`contract transaction ${crowdFindingAddress}`)
-    // }
+        const totalCampaign = await crowdFunding.getTotalCampaign()
+        return totalCampaign
+    }
 }
-
-await Moralis.start({
-    apiKey: process.env.MORALIS_API_KEY,
-})

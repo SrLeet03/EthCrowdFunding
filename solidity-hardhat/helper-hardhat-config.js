@@ -17,14 +17,17 @@ const networkconfig = {
 
 const developmentChains = ["hardhat", "localhost"]
 const VERIFICATION_BLOCK_CONFIRMATIONS = 6
-const frontEndContractAddressFile =
-    "../client/frontend/src/Constants/contractAddress.json"
-const frontEndAbiFile = "../client/frontend/src/Constants/abi.json"
+const crowdFundingAddressFile =
+    "../client/frontend/src/Constants/crowdFundingAddress.json"
+const crowdFundingAbiFile =
+    "../client/frontend/src/Constants/crowdFundingAbi.json"
+const campaignAbiFile = "../client/frontend/src/Constants/campaignAbi.json"
 
 module.exports = {
     networkconfig,
     developmentChains,
     VERIFICATION_BLOCK_CONFIRMATIONS,
-    frontEndContractAddressFile,
-    frontEndAbiFile,
+    crowdFundingAddressFile,
+    crowdFundingAbiFile,
+    campaignAbiFile,
 }
