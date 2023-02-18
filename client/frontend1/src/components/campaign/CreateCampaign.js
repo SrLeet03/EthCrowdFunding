@@ -1,6 +1,7 @@
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import { useNavigate  } from 'react-router-dom'
+import {useState , useEffect} from 'react' ;
 
 import { TbArrowBarLeft } from "react-icons/tb";
 
@@ -12,6 +13,24 @@ function CreateCampaign() {
         history("/fundraisers");
     }
     
+    const [campaign , setCampaign] = useState({
+        email : null,
+        title:null,
+        desc : null,
+        addr : null,
+        amount : null,
+        date : null 
+    }) ; 
+
+    const handleChange = () =>{
+      const { name, value } = e.target;
+      setState(prevState => ({
+          ...prevState,
+          [name]: value
+      }));  
+    }
+
+    
   return (
     <>
         <button onClick={handlegoBack} style={{ border: 'none', backgroundColor: 'white', textAlign: 'right', padding: '20px'  }} >
@@ -21,7 +40,7 @@ function CreateCampaign() {
     <Form style={{maxWidth:'30rem' , marginLeft:'10rem'}}>
       <Form.Group className="mb-3" controlId="formBasicEmail">
         <Form.Label>Email address</Form.Label>
-        <Form.Control type="email" placeholder="Enter email" />
+        <Form.Control name="email" value={campaign.} type="email" placeholder="Enter email" />
         <Form.Text className="text-muted">
           We'll never share your email with anyone else.
         </Form.Text>
