@@ -55,3 +55,7 @@ export default function CrowdFunding() {
         return totalCampaign
     }
 }
+
+CreateCampaign().then((src) => {
+    console.log(src)
+})
