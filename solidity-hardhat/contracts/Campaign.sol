@@ -12,7 +12,8 @@ error Campaign__RequestRejected();
 error Campaign__NotAnEligiableContributer();
 error Campaign__ContributionTransactionFailed();
 error Campaign__WithdrawTransactionFailed();
-error CampaignLib__NoEnoughAmount();
+error Campaign__NoEnoughAmount();
+error Campaign__NotAContributer();
 
 contract Campaign is Stake {
     mapping(address => uint256) public s_contributerFund;
@@ -38,6 +39,13 @@ contract Campaign is Stake {
     modifier onlyOwner() {
         if (msg.sender != s_owner) {
             revert Campaign__NotOwner();
+        }
+        _;
+    }
+
+    modifier onlyContributers() {
+        if (s_contributerFund[msg.sender] == 0) {
+            revert Campaign__NotAContributer();
         }
         _;
     }
@@ -179,7 +187,7 @@ contract Campaign is Stake {
         uint256 totalAmount
     ) internal pure returns (uint256) {
         if (amount * bps < totalAmount) {
-            revert CampaignLib__NoEnoughAmount();
+            revert Campaign__NoEnoughAmount();
         }
         return (amount * bps) / totalAmount;
     }
