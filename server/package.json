@@ -3,8 +3,8 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node app.js",
-    "dev": "nodemon app.js"
+    "start": "export SET NODE_OPTIONS=--openssl-legacy-provider && ./node_modules/.bin/netlify-lambda serve src",
+    "build": "export SET NODE_OPTIONS=--openssl-legacy-provider && ./node_modules/.bin/netlify-lambda build src"
   },
   "dependencies": {
     "cookie-parser": "~1.4.4",
@@ -16,6 +16,9 @@
     "jade": "^1.9.2",
     "mongoose": "^6.9.1",
     "morgan": "~1.9.1",
-    "nodemon": "^2.0.20"
+    "netlify-cli": "^12.13.1",
+    "netlify-lambda": "^2.0.16",
+    "nodemon": "^2.0.20",
+    "serverless-http": "^3.1.1"
   }
 }

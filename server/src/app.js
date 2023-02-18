@@ -3,6 +3,7 @@ const cors = require("cors");
 const app = express();
 const indexRouter = require("./routes/index");
 const campaignRoutes = require('./routes/campaignRoutes');
+const serverless = require("serverless-http");
 require("dotenv").config()
 
 
@@ -31,11 +32,14 @@ db.mongoose
   });
 
 
-app.use("/", indexRouter);
-app.use("/campaign", campaignRoutes);
+// app.use("/", indexRouter);
+// app.use("/campaign", campaignRoutes);
 
+app.use(`/.netlify/functions/api`, router);
 
-const PORT = process.env.PORT || 8080;
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}.`);
-});
+// const PORT = process.env.PORT || 8080;
+// app.listen(PORT, () => {
+//   console.log(`Server is running on port ${PORT}.`);
+// });
+module.exports = app;
+module.exports.handler = serverless(app);
