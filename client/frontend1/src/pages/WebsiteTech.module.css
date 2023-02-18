@@ -1,0 +1,696 @@
+.maskGroupIcon {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 1440px;
+  height: 672px;
+  object-fit: cover;
+}
+.fundraising {
+  color: var(--color-steelblue);
+}
+.aDecentralizedOpenSource,
+.theFutureOfContainer {
+  position: absolute;
+  left: 165px;
+  display: inline-block;
+}
+.theFutureOfContainer {
+  top: 135.94px;
+  font-size: 51.88px;
+  letter-spacing: 0.24px;
+  line-height: 66.03px;
+  text-align: left;
+  width: 540px;
+}
+.aDecentralizedOpenSource {
+  top: 294px;
+  letter-spacing: 0.3px;
+  line-height: 27.5px;
+  width: 445px;
+}
+.loremAnd120 {
+  top: 535px;
+  left: 283px;
+  letter-spacing: 0.3px;
+  line-height: 27.5px;
+}
+.btnRect,
+.label,
+.loremAnd120 {
+  position: absolute;
+}
+.btnRect {
+  top: 0;
+  left: 0;
+  background-color: var(--color-steelblue);
+  width: 139px;
+  height: 48px;
+}
+.label {
+  top: 15px;
+  left: 18px;
+  font-size: var(--font-size-base);
+  letter-spacing: 0.3px;
+  line-height: 18px;
+  display: flex;
+  font-family: var(--font-poppins);
+  color: var(--color-white);
+  text-align: center;
+  align-items: center;
+  justify-content: center;
+  width: 103px;
+  height: 18px;
+}
+.btnRectParent {
+  cursor: pointer;
+  border: 0;
+  padding: 0;
+  background-color: transparent;
+  position: absolute;
+  top: 427px;
+  left: 165px;
+  width: 139px;
+  height: 48px;
+}
+.heroSectionChild {
+  position: absolute;
+  top: 523.85px;
+  left: 165.44px;
+  width: 97.11px;
+  height: 44.3px;
+  object-fit: cover;
+}
+.heroSection,
+.rect {
+  position: absolute;
+  left: 0;
+  width: 1440px;
+}
+.heroSection {
+  top: 88px;
+  height: 672px;
+  text-align: justify;
+}
+.rect {
+  top: 0;
+  background-color: var(--color-gray-100);
+  height: 88px;
+}
+.contribute,
+.home,
+.startCampaign {
+  cursor: pointer;
+  border: 0;
+  padding: 0;
+  background-color: transparent;
+  position: absolute;
+  top: 0;
+  left: 0;
+  font-size: var(--font-size-base);
+  letter-spacing: 0.2px;
+  line-height: 18px;
+  font-weight: 600;
+  font-family: var(--font-poppins);
+  color: var(--color-steelblue);
+  text-align: left;
+  display: inline-block;
+}
+.contribute,
+.startCampaign {
+  left: 86px;
+  color: var(--color-gray-200);
+  text-align: center;
+}
+.contribute {
+  left: 236.74px;
+  text-align: left;
+}
+.btnRect1,
+.links {
+  position: absolute;
+  top: 14px;
+  left: 671px;
+  width: 316.74px;
+  height: 18px;
+}
+.btnRect1 {
+  cursor: pointer;
+  border: 0;
+  padding: 0;
+  background-color: var(--color-steelblue);
+  top: 0;
+  left: 0;
+  width: 83px;
+  height: 42px;
+}
+.label1 {
+  position: absolute;
+  top: 12px;
+  left: 18px;
+  font-size: var(--font-size-base);
+  letter-spacing: 0.3px;
+  line-height: 18px;
+  display: flex;
+  font-family: var(--font-poppins);
+  color: var(--color-white);
+  text-align: center;
+  align-items: center;
+  justify-content: center;
+  width: 47px;
+  height: 18px;
+}
+.btnRectGroup {
+  cursor: pointer;
+  border: 0;
+  padding: 0;
+  background-color: transparent;
+  position: absolute;
+  top: 0;
+  left: 1027px;
+  width: 83px;
+  height: 42px;
+}
+.cryptofunder {
+  position: absolute;
+  top: 2px;
+  left: 0;
+  letter-spacing: 0.24px;
+}
+.linksParent,
+.navBar {
+  position: absolute;
+  top: 23px;
+  left: 165px;
+  width: 1110px;
+  height: 42px;
+}
+.navBar {
+  top: 0;
+  left: 0;
+  width: 1440px;
+  height: 88px;
+  text-align: left;
+  font-size: 24px;
+  color: var(--color-gray-200);
+  font-family: var(--font-poppins);
+}
+.security,
+.whyChooseUs1 {
+  position: absolute;
+  letter-spacing: 0.1px;
+}
+.whyChooseUs1 {
+  top: 0;
+  left: 412px;
+  font-size: var(--font-size-3xl);
+  line-height: 40px;
+}
+.security {
+  top: 60.67px;
+  left: 0;
+  line-height: 24px;
+  display: inline-block;
+  width: 350px;
+}
+.vectorIcon {
+  position: absolute;
+  top: -1px;
+  left: 160.67px;
+  width: 28.67px;
+  height: 35.33px;
+}
+.cryptofunderUsesBlockchain {
+  position: absolute;
+  top: 96.67px;
+  left: 13px;
+  font-size: var(--font-size-base);
+  letter-spacing: 0.2px;
+  line-height: 20px;
+  display: inline-block;
+  width: 324px;
+}
+.securityParent {
+  position: absolute;
+  top: 122.33px;
+  left: 380px;
+  width: 350px;
+  height: 196.67px;
+}
+.cryptofunderIsDecentralised,
+.decentralisation {
+  position: absolute;
+  top: 82px;
+  left: 0;
+  letter-spacing: 0.1px;
+  line-height: 24px;
+  display: inline-block;
+  width: 350px;
+}
+.cryptofunderIsDecentralised {
+  top: 118px;
+  left: 12px;
+  font-size: var(--font-size-base);
+  letter-spacing: 0.2px;
+  line-height: 20px;
+  width: 326px;
+}
+.groupChild {
+  position: absolute;
+  top: 0;
+  left: 144px;
+  width: 62px;
+  height: 60.95px;
+}
+.decentralisationParent {
+  position: absolute;
+  top: 101px;
+  left: 0;
+  width: 350px;
+  height: 218px;
+}
+.cryptofunderCanUse,
+.smartContracts {
+  position: absolute;
+  top: 72px;
+  left: 0;
+  letter-spacing: 0.1px;
+  line-height: 24px;
+  display: inline-block;
+  width: 350px;
+}
+.cryptofunderCanUse {
+  top: 108px;
+  left: 9px;
+  font-size: var(--font-size-base);
+  letter-spacing: 0.2px;
+  line-height: 20px;
+  width: 332px;
+}
+.vectorIcon1 {
+  position: absolute;
+  top: 0;
+  left: 158px;
+  width: 35px;
+  height: 45px;
+}
+.smartContractsParent {
+  position: absolute;
+  top: 111px;
+  left: 760px;
+  width: 350px;
+  height: 208px;
+}
+.accountability,
+.theTransparencyAnd {
+  position: absolute;
+  top: 61px;
+  left: 0;
+  letter-spacing: 0.1px;
+  line-height: 24px;
+  display: inline-block;
+  width: 350px;
+}
+.theTransparencyAnd {
+  top: 97px;
+  left: 12px;
+  font-size: var(--font-size-base);
+  letter-spacing: 0.2px;
+  line-height: 20px;
+  width: 326px;
+}
+.vectorIcon2 {
+  position: absolute;
+  top: -0.5px;
+  left: 154.5px;
+  width: 41px;
+  height: 50px;
+}
+.accountabilityParent {
+  position: absolute;
+  top: 395px;
+  left: 0;
+  width: 350px;
+  height: 217px;
+}
+.cryptofunderCanUse1 {
+  position: absolute;
+  top: 97px;
+  left: 13px;
+  font-size: var(--font-size-base);
+  letter-spacing: 0.2px;
+  line-height: 20px;
+  display: inline-block;
+  width: 324px;
+}
+.groupItem,
+.subtractIcon {
+  position: absolute;
+  top: 9.14px;
+  left: 161.3px;
+  width: 27.69px;
+  height: 30.68px;
+}
+.groupItem {
+  top: 0;
+  left: 150.5px;
+  width: 49px;
+  height: 49px;
+}
+.tokenisationParent {
+  position: absolute;
+  top: 395px;
+  left: 380px;
+  width: 350px;
+  height: 217px;
+}
+.cryptofunderCanUse2 {
+  position: absolute;
+  top: 97px;
+  left: 15px;
+  font-size: var(--font-size-base);
+  letter-spacing: 0.2px;
+  line-height: 20px;
+  display: inline-block;
+  width: 320px;
+}
+.vectorIcon3 {
+  position: absolute;
+  top: 0;
+  left: 146px;
+  width: 52px;
+  height: 45px;
+}
+.governanceParent,
+.whyChooseUs {
+  position: absolute;
+  top: 395px;
+  left: 760px;
+  width: 350px;
+  height: 217px;
+}
+.whyChooseUs {
+  top: 837px;
+  left: 165px;
+  width: 1110px;
+  height: 612px;
+  font-size: var(--font-size-xl);
+  color: var(--color-gray-200);
+}
+.watchOnYoutubeChild {
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-color: var(--color-gray-200);
+  width: 1440px;
+  height: 546px;
+}
+.democratizingAccessTo {
+  top: 129px;
+  left: 165px;
+  font-size: var(--font-size-3xl);
+  display: inline-block;
+  width: 384px;
+}
+.democratizingAccessTo,
+.helpingBringGameChanging,
+.learnMore {
+  position: absolute;
+  letter-spacing: 0.2px;
+  line-height: 137%;
+}
+.helpingBringGameChanging {
+  top: 334px;
+  left: 165px;
+  font-size: var(--font-size-lg);
+  display: inline-block;
+  width: 369px;
+}
+.learnMore {
+  top: 379px;
+  left: 230px;
+  font-size: var(--font-size-base);
+  text-decoration: underline;
+  color: var(--color-steelblue);
+}
+.maskGroupIcon1,
+.wrapper {
+  position: absolute;
+  top: 83px;
+  left: 735px;
+  width: 540px;
+  height: 363px;
+}
+.maskGroupIcon1 {
+  object-fit: cover;
+}
+.wrapper {
+  background: linear-gradient(
+    180deg,
+    rgba(0, 0, 0, 0.62),
+    transparent 48.96%,
+    rgba(0, 0, 0, 0.44)
+  );
+}
+.image7Icon {
+  position: absolute;
+  top: 236px;
+  left: 965px;
+  width: 80px;
+  height: 55px;
+  object-fit: cover;
+}
+.theFutureOf,
+.watchOnYoutube1 {
+  position: absolute;
+  top: 100px;
+  left: 753px;
+  letter-spacing: 0.2px;
+  line-height: 137%;
+  text-align: justify;
+}
+.watchOnYoutube1 {
+  top: 310px;
+  left: 907px;
+  font-weight: 600;
+}
+.watchOnYoutube {
+  position: absolute;
+  top: 1554px;
+  left: 0;
+  width: 1440px;
+  height: 546px;
+  text-align: left;
+  font-size: var(--font-size-2xl);
+}
+.whatOurCustomers {
+  position: absolute;
+  top: 0;
+  left: 330px;
+  font-size: var(--font-size-3xl);
+  letter-spacing: 0.1px;
+  line-height: 40px;
+  color: var(--color-gray-200);
+}
+.groupInner {
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-color: var(--color-steelblue);
+  width: 350px;
+  height: 230px;
+}
+.maskGroupIcon2 {
+  position: absolute;
+  top: 195px;
+  left: 140.09px;
+  width: 69px;
+  height: 69px;
+  object-fit: cover;
+}
+.icon {
+  position: absolute;
+  top: 15px;
+  left: 148px;
+  width: 55px;
+  height: 44px;
+}
+.cryptofunderGaveMe {
+  position: absolute;
+  top: 78px;
+  left: 14px;
+  letter-spacing: 0.2px;
+  line-height: 137%;
+  display: inline-block;
+  width: 322px;
+}
+.rectangleParent {
+  position: absolute;
+  top: 99px;
+  left: 380px;
+  width: 350px;
+  height: 264px;
+  color: var(--color-white);
+}
+.rectangleDiv {
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-color: var(--color-aliceblue);
+  width: 350px;
+  height: 230px;
+}
+.maskGroupIcon3 {
+  position: absolute;
+  top: 195px;
+  left: 141.09px;
+  width: 69px;
+  height: 69px;
+  object-fit: cover;
+}
+.icon1 {
+  position: absolute;
+  top: 17px;
+  left: 147px;
+  width: 55px;
+  height: 44px;
+}
+.iLoveItthe {
+  position: absolute;
+  top: 79px;
+  left: 10px;
+  letter-spacing: 0.2px;
+  line-height: 137%;
+  display: inline-block;
+  width: 329px;
+}
+.rectangleGroup {
+  position: absolute;
+  top: 141px;
+  left: 0;
+  width: 350px;
+  height: 264px;
+}
+.iAmAmazed {
+  position: absolute;
+  top: 79px;
+  left: 20px;
+  letter-spacing: 0.2px;
+  line-height: 137%;
+  display: inline-block;
+  width: 309px;
+}
+.rectangleContainer,
+.testimonials {
+  position: absolute;
+  top: 141px;
+  left: 760px;
+  width: 350px;
+  height: 264px;
+}
+.testimonials {
+  top: 2191px;
+  left: 165px;
+  width: 1110px;
+  height: 405px;
+  font-size: var(--font-size-base);
+  color: var(--color-black);
+}
+.readyToGetStartedChild {
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-color: var(--color-gray-200);
+  width: 1440px;
+  height: 316px;
+}
+.doYouHave,
+.readyToGet {
+  position: absolute;
+  letter-spacing: 0.1px;
+}
+.readyToGet {
+  top: 53px;
+  left: 535px;
+  line-height: 40px;
+}
+.doYouHave {
+  top: 119px;
+  left: 308px;
+  font-size: var(--font-size-2xl);
+  display: inline-block;
+  width: 826px;
+}
+.btnRect2 {
+  border: 0;
+  background-color: var(--color-steelblue);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 179px;
+  height: 48px;
+}
+.label2 {
+  position: absolute;
+  top: 15px;
+  left: 26px;
+  font-size: var(--font-size-base);
+  letter-spacing: 0.3px;
+  line-height: 18px;
+  font-family: var(--font-poppins);
+  color: var(--color-white);
+  text-align: center;
+}
+.btnRectContainer {
+  cursor: pointer;
+  border: 0;
+  padding: 0;
+  background-color: transparent;
+  position: absolute;
+  top: 217px;
+  left: 631px;
+  width: 179px;
+  height: 48px;
+}
+.footerChild,
+.readyToGetStarted {
+  position: absolute;
+  left: 0;
+  width: 1440px;
+}
+.readyToGetStarted {
+  top: 2687px;
+  height: 316px;
+  font-size: var(--font-size-3xl);
+}
+.footerChild {
+  top: 0;
+  background-color: var(--color-gray-100);
+  height: 69px;
+}
+.cryptofunderAllRights {
+  position: absolute;
+  top: 24px;
+  left: 570px;
+  letter-spacing: 0.2px;
+  font-weight: 600;
+}
+.footer {
+  position: absolute;
+  top: 3003px;
+  left: 0;
+  width: 1440px;
+  height: 69px;
+  color: var(--color-gray-200);
+}
+.websiteTech {
+  position: relative;
+  background-color: var(--color-white);
+  width: 100%;
+  height: 3072px;
+  overflow: hidden;
+  text-align: center;
+  font-size: var(--font-size-lg);
+  color: var(--color-white);
+  font-family: var(--font-poppins);
+}
