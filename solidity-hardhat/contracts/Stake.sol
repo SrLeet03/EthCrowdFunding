@@ -10,17 +10,19 @@ import "./CampaignLib.sol";
 // contributers can vote
 // End the event
 // Send the result and withdraw if needed
+//
 
 error Stake__DeadlineNotReached();
 error Stake__DeadLineReached();
+error Stake__ContributerAlreadyVoted();
 
 contract Stake {
     struct Request {
         mapping(address => bool) contributersVoted;
-        uint256 minContributionToVote;
         uint256 durationOfRequest;
         uint256 requestedAmount;
         uint256 requestedTime;
+        address campaignAddress;
         // Voting variables
         uint256 totalAcceptVote;
         uint256 totalRejectVote;
@@ -49,12 +51,18 @@ contract Stake {
 
     function stake(
         Request storage request,
-        CampaignLib.vote myVote
+        CampaignLib.vote myVote,
+        address contributer,
+        uint256 weightage
     ) internal deadlineReached(request, false) {
+        if (request.contributersVoted[contributer]) {
+            revert Stake__ContributerAlreadyVoted();
+        }
+        request.contributersVoted[contributer] = true;
         if (myVote == CampaignLib.vote.ACCEPT) {
-            request.totalAcceptVote += 1;
+            request.totalAcceptVote += weightage;
         } else {
-            request.totalRejectVote += 1;
+            request.totalRejectVote += weightage;
         }
     }
 
@@ -95,12 +103,6 @@ contract Stake {
 
     function setRecieved(Request storage request) internal {
         request.amountRecieved = true;
-    }
-
-    function getMinimumContribution(
-        Request storage request
-    ) internal view returns (uint256) {
-        return request.minContributionToVote;
     }
 
     function getPermissionStatus(

@@ -1,20 +1,20 @@
-import logo from './logo.svg';
-import './App.css';
+import logo from "./logo.svg"
+import "./App.css"
 
 import { Auth, useAuth } from "@arcana/auth-react";
 import Loader from './pages/Loader';
 import Layout from './components/Layout';
 
-import {Provider} from 'react-redux'
+import {Provider} from 'react-redux'; 
 import store from './redux/store' ; 
 
 const onLogin = () => {
-  // Route to authenticated page
-  return "hello"
+    // Route to authenticated page
+    return "hello"
 }
 
 function App() {
-  const auth = useAuth();
+    const auth = useAuth()
 
   return (
     <div>
@@ -34,4 +34,4 @@ function App() {
   );
 }
 
-export default App;
+export default App
