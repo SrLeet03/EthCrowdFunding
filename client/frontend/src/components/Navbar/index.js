@@ -9,13 +9,13 @@ NavBtnLink,
 } from './NavbarElements';
 
 
-import { FaAffiliatetheme } from "react-icons/fa";
-import { FaAmazonPay } from "react-icons/fa";
-import { FaBlogger } from "react-icons/fa";
+// import { FaAffiliatetheme } from "react-icons/fa";
+// import { FaAmazonPay } from "react-icons/fa";
+// import { FaBlogger } from "react-icons/fa";
 import { useSelector  } from 'react-redux';
 import { Redirect } from 'react-router';
-import { FaFirefoxBrowser } from "react-icons/fa";
-import Button from '@restart/ui/esm/Button';
+// import { FaFirefoxBrowser } from "react-icons/fa";
+// import Button from '@restart/ui/esm/Button';
 
    
 const Navbar = () => {
@@ -46,10 +46,10 @@ const Navbar = () => {
 return (
 	<>
 	<Nav>
-		<Bars />
+		{/* <Bars /> */}
 
 		<NavMenu>
-		<NavLink exact to='/' activeStyle>
+		{/* <NavLink exact to='/' activeStyle>
 			<FaAffiliatetheme/>Home
 		</NavLink>
 		<NavLink to='/about' activeStyle>
@@ -64,13 +64,13 @@ return (
 		</NavLink>
 		 <NavLink to='/myprofile' activeStyle>
 			<FaBlogger/>Profile
-	     </NavLink>
+	     </NavLink> */}
 			
 		</NavMenu>
 		
 		<NavBtn>
 			{
-				state.state===true ? <Button onClick = {handleLogout}>Log Out</Button>
+				state.state===true ? <button onClick = {handleLogout}>Log Out</button>
 				:<NavBtnLink to='/signup'>Sign Up</NavBtnLink>
 			}
 		

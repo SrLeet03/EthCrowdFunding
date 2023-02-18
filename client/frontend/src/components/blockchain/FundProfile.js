@@ -2,7 +2,7 @@ import React , {useState} from 'react'
 
 import { Link, useRouteMatch } from 'react-router-dom'
 import { Button  , ProgressBar} from 'react-bootstrap'
-import { FaHandHoldingHeart } from 'react-icons/fa'
+// import { FaHandHoldingHeart } from 'react-icons/fa'
 import './css/profile.css'
 import Mainbody from './Mainbody'
 import Requestbody from './Requestbody'
@@ -44,7 +44,7 @@ export default function FundProfile({ info }) {
                 <div className="slide job-detail">
                     <div className="apply-top">
                         <div className="d-grid gap-2">
-                            <Button variant="success" size="lg"><FaHandHoldingHeart />Donate Now</Button>
+                            {/* <Button variant="success" size="lg"><FaHandHoldingHeart />Donate Now</Button> */}
                             <ProgressBar animated now={dayLeft}  label={`${dayLeft}`}/>Days Left!
                         </div>
 
