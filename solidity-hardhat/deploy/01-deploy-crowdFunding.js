@@ -7,9 +7,8 @@ const {
     VERIFICATION_BLOCK_CONFIRMATIONS,
 } = require("../helper-hardhat-config")
 
-const CAMPAGIN_GOAL1 = "200"
-const CAMPAGIN_GOAL2 = "500"
-const MINIMUM_CONTRIBUTION = "0.2"
+const CAMPAGIN_GOAL = ethers.utils.parseEther("1000")
+const MINIMUM_CONTRIBUTION = ethers.utils.parseEther("0.01")
 const BLOCK_CONFORMATION = VERIFICATION_BLOCK_CONFIRMATIONS
 
 module.exports = async (hre) => {
@@ -18,47 +17,59 @@ module.exports = async (hre) => {
     const { log, deploy } = deployments
     const chainId = network.config.chainId
 
-    const args = [
-        // ethers.utils.parseEther(CAMPAGIN_GOAL2),
-        // ethers.utils.parseEther(MINIMUM_CONTRIBUTION),
-    ]
-
     log("----------")
-    log(`deployer ${deployer2}`)
+    log(`deployer ${deployer1}`)
     log("----------")
 
     const library = await deploy("CampaignLib", {
-        from: deployer2,
-        args: args,
+        from: deployer1,
+        args: [],
         log: true,
         waitConfirmation: BLOCK_CONFORMATION,
     })
 
     const stake = await deploy("Stake", {
-        from: deployer2,
-        args: args,
+        from: deployer1,
+        args: [],
         log: true,
         waitConfirmation: BLOCK_CONFORMATION,
     })
 
+    // const campaign = await deploy("Campaign", {
+    //     from: deployer1,
+    //     args: [CAMPAGIN_GOAL1, MINIMUM_CONTRIBUTION],
+    //     log: true,
+    //     waitConfirmation: BLOCK_CONFORMATION,
+    // })
+
     const crowdFunding = await deploy("CrowdFunding", {
-        from: deployer2,
-        args: args,
+        from: deployer1,
+        args: [],
         log: true,
         waitConfirmation: BLOCK_CONFORMATION,
     })
+
+    const campaignCreation = await crowdFunding.methods.createCampaign(
+        CAMPAGIN_GOAL,
+        MINIMUM_CONTRIBUTION
+    )
 
     log("------------------------------------")
     log(`address of the library ${library.address}`)
     log(`address of the stake ${stake.address}`)
     log(`address of the crowdfunding ${crowdFunding.address}`)
+    log(`address of deployed campaign ${campaignCreation.address}`)
     log("------------------------------------")
 
     if (!developmentChains.includes(network.name)) {
         log("Verifying...")
-        await verify(library.address, args)
-        await verify(stake.address, args)
-        await verify(crowdFunding.address, args)
+        await verify(library.address, [])
+        await verify(stake.address, [])
+        await verify(campaignCreation.address, [
+            CAMPAGIN_GOAL,
+            MINIMUM_CONTRIBUTION,
+        ])
+        await verify(crowdFunding.address, [])
     }
 }
 

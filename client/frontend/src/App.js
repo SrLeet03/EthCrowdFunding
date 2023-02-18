@@ -1,30 +1,37 @@
-import logo from './logo.svg';
-import './App.css';
+import logo from "./logo.svg"
+import "./App.css"
 
-import { Auth, useAuth } from "@arcana/auth-react";
+import { Auth, useAuth } from "@arcana/auth-react"
+import CrowdFunding from "./Components/CrowdFunding"
 
 const onLogin = () => {
-  // Route to authenticated page
-  return "hello"
+    // Route to authenticated page
+    return "hello"
 }
-
 
 function App() {
-  const auth = useAuth();
+    const auth = useAuth()
 
-  return (
-    <div>
-      {auth.loading ? (
-        "Loading"
-      ) : auth.isLoggedIn ? (
-        <p>Logged In</p>
-      ) : (
+    return (
         <div>
-          <Auth externalWallet={true} theme={"light"} onLogin={onLogin}/>
+            {auth.loading ? (
+                "Loading"
+            ) : auth.isLoggedIn ? (
+                <div>
+                    <p>Logged In</p>
+                    <CrowdFunding />
+                </div>
+            ) : (
+                <div>
+                    <Auth
+                        externalWallet={true}
+                        theme={"light"}
+                        onLogin={onLogin}
+                    />
+                </div>
+            )}
         </div>
-      )}
-    </div>
-  );
+    )
 }
 
-export default App;
+export default App
