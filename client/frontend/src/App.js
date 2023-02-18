@@ -1,8 +1,12 @@
 import logo from "./logo.svg"
 import "./App.css"
 
-import { Auth, useAuth } from "@arcana/auth-react"
-import CrowdFunding from "./Components/CrowdFunding"
+import { Auth, useAuth } from "@arcana/auth-react";
+import Loader from './pages/Loader';
+import Layout from './components/Layout';
+
+import {Provider} from 'react-redux'; 
+import store from './redux/store' ; 
 
 const onLogin = () => {
     // Route to authenticated page
@@ -12,26 +16,22 @@ const onLogin = () => {
 function App() {
     const auth = useAuth()
 
-    return (
-        <div>
+  return (
+    <div>
+        <Provider store = {store}>
             {auth.loading ? (
-                "Loading"
+              <Loader/>
             ) : auth.isLoggedIn ? (
-                <div>
-                    <p>Logged In</p>
-                    <CrowdFunding />
-                </div>
+              <p>Logged In</p>
             ) : (
-                <div>
-                    <Auth
-                        externalWallet={true}
-                        theme={"light"}
-                        onLogin={onLogin}
-                    />
-                </div>
+              <div>
+                <Auth externalWallet={true} theme={"light"} onLogin={onLogin}/>
+              </div>
             )}
-        </div>
-    )
+        </Provider>   
+
+    </div>
+  );
 }
 
 export default App

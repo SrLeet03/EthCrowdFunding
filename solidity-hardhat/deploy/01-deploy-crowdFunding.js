@@ -42,14 +42,18 @@ module.exports = async (hre) => {
     //     waitConfirmation: BLOCK_CONFORMATION,
     // })
 
-    const crowdFunding = await deploy("CrowdFunding", {
+    const crowdFundingContract = await deploy("CrowdFunding", {
         from: deployer1,
         args: [],
         log: true,
         waitConfirmation: BLOCK_CONFORMATION,
     })
 
-    const campaignCreation = await crowdFunding.methods.createCampaign(
+    const contract = await ethers.getContract("CrowdFunding", deployer1)
+    const addressSigner = await ethers.getSigner(deployer2)
+    const crowdFunding = contract.connect(addressSigner)
+
+    const campaignCreation = await crowdFunding.createCampaign(
         CAMPAGIN_GOAL,
         MINIMUM_CONTRIBUTION
     )
@@ -57,7 +61,7 @@ module.exports = async (hre) => {
     log("------------------------------------")
     log(`address of the library ${library.address}`)
     log(`address of the stake ${stake.address}`)
-    log(`address of the crowdfunding ${crowdFunding.address}`)
+    log(`address of the crowdfunding ${crowdFundingContract.address}`)
     log(`address of deployed campaign ${campaignCreation.address}`)
     log("------------------------------------")
 
@@ -69,7 +73,7 @@ module.exports = async (hre) => {
             CAMPAGIN_GOAL,
             MINIMUM_CONTRIBUTION,
         ])
-        await verify(crowdFunding.address, [])
+        await verify(crowdFundingContract.address, [])
     }
 }
 
