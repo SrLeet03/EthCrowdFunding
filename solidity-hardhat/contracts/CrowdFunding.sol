@@ -7,6 +7,7 @@ import "./Campaign.sol";
 contract CrowdFunding {
     mapping(address => Campaign[]) private s_campaigns;
     address[] private s_campaignCreaters;
+    uint256 private s_totalCampaign;
 
     event CampaignCreated(
         address campaignCreator,
@@ -23,6 +24,8 @@ contract CrowdFunding {
 
         s_campaigns[msg.sender].push(campaign);
         s_campaignCreaters.push(msg.sender);
+
+        s_totalCampaign += 1;
 
         emit CampaignCreated(
             msg.sender,
@@ -47,6 +50,10 @@ contract CrowdFunding {
             campaigns[i] = address(s_campaigns[owner][i]);
         }
         return campaigns;
+    }
+
+    function getTotalCampaign() public view returns (uint256) {
+        return s_totalCampaign;
     }
 
     // Implement a function to get s_campagins

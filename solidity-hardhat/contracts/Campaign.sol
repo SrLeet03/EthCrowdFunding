@@ -10,6 +10,9 @@ error Campaign__NotEnoughToWithdraw();
 error Campaign__RequestIsUnderProcess();
 error Campaign__RequestRejected();
 error Campaign__NotAnEligiableContributer();
+error Campaign__ContributionTransactionFailed();
+error Campaign__WithdrawTransactionFailed();
+error CampaignLib__NoEnoughAmount();
 
 contract Campaign is Stake {
     mapping(address => uint256) public s_contributerFund;
@@ -40,6 +43,7 @@ contract Campaign is Stake {
     }
 
     modifier permissionIssued(uint256 requestIndex) {
+        executeResult(requestIndex);
         if (
             getPermissionStatus(s_requests[requestIndex]) ==
             CampaignLib.permission.PROCESSING
@@ -55,21 +59,15 @@ contract Campaign is Stake {
         _;
     }
 
-    modifier onlyEligiableContributers(
-        uint256 minContribution,
-        address contributer
-    ) {
-        if (s_contributerFund[contributer] < minContribution) {
-            revert Campaign__NotAnEligiableContributer();
-        }
-        _;
-    }
-
     function contribute() public payable {
         if (msg.value < i_minContribution) {
             revert Campaign__SendMinFund();
         }
-        (bool send, ) = address(this).call{value: msg.value}("");
+        (bool sent, ) = address(this).call{value: msg.value}("");
+
+        if (!sent) {
+            revert Campaign__ContributionTransactionFailed();
+        }
 
         emit FundTransfered(msg.sender, msg.value);
 
@@ -86,31 +84,40 @@ contract Campaign is Stake {
             revert Campaign__NotEnoughToWithdraw();
         }
         (bool sent, ) = s_owner.call{value: amount}("");
+
+        if (!sent) {
+            revert Campaign__WithdrawTransactionFailed();
+        }
+
         setRecieved(s_requests[requestIndex]);
         emit FundWithdrawed(amount);
     }
 
     function makeRequest(
         uint256 _durationOfRequest,
-        uint256 _withdrawAmount,
-        uint256 _minContributionToVote
+        uint256 _withdrawAmount
     ) public onlyOwner {
         // Stake happens here
 
         Request storage request = s_requests.push();
-        request.minContributionToVote = _minContributionToVote;
         request.durationOfRequest = _durationOfRequest;
         request.requestedAmount = _withdrawAmount;
         request.requestedTime = block.timestamp;
         request.totalAcceptVote = 0;
         request.totalRejectVote = 0;
         request.amountRecieved = false;
+        request.campaignAddress = address(this);
         request.currentStatus = CampaignLib.permission.PROCESSING;
-        emit RequestApplied(s_requests.length);
+        emit RequestApplied(s_requests.length - 1);
     }
 
     function stakeInRequest(uint256 requestId, CampaignLib.vote myVote) public {
-        stake(s_requests[requestId], myVote);
+        uint256 weightage = calcualtePercent(
+            s_contributerFund[msg.sender],
+            10000,
+            s_TotalFunded
+        );
+        stake(s_requests[requestId], myVote, msg.sender, weightage);
     }
 
     function executeResult(uint256 requestIndex) public {
@@ -160,5 +167,20 @@ contract Campaign is Stake {
 
     function getCampaignGoal() public view returns (uint256) {
         return i_campaignGoal;
+    }
+
+    function getTotalContributers() public view returns (uint256) {
+        return s_contributers.length;
+    }
+
+    function calcualtePercent(
+        uint256 amount,
+        uint256 bps,
+        uint256 totalAmount
+    ) internal pure returns (uint256) {
+        if (amount * bps < totalAmount) {
+            revert CampaignLib__NoEnoughAmount();
+        }
+        return (amount * bps) / totalAmount;
     }
 }
