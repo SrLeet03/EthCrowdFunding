@@ -1,75 +1,68 @@
 const Campaign = require("../models/campaign")
 
-  exports.index = (req, res) => {
-    res.send("NOT IMPLEMENTED: Site Home Page");
-  };
-  exports.getAllCampaign = async (req, res) => {
-    const allCampaign = await Campaign.find({});
-    res.send(allCampaign);
-  };
-  exports.createCampaign = async (req, res) => {
-    const campaignInstance = new Campaign(
-      { 
-        name : req.body.name,
-        description: req.body.description,
-        donation_target: req.body.donation_target, 
-        public_key: req.body.public_key,
-        category: req.body.category
-      });
-    await campaignInstance.save();
-    res.send(campaignInstance);
-  }
-  exports.getCampaignById = async (req,res)=>{
-    const id = req.query.id;
-    const result = await Campaign.findById(id);
-    res.send(result);
-  }
-  exports.getCampaignByCategory= async (req,res)=>{
-    const category = req.query.category;
-    console.log(category);
-    const result = await Campaign.find({category: category});
-    console.log(result);
-    res.send(result);
-  }
-  exports.deleteCampaignById= async (req,res)=>{
-    const id = req.query.id;
-    console.log(id);
-    const result = await Campaign.findByIdAndDelete(id);
-    console.log(result);
-    res.send(result);
-  }
-  // Display list of all books.
-  // Display detail page for a specific book.
-  // exports.book_detail = (req, res) => {
-  //   res.send(`NOT IMPLEMENTED: Book detail: ${req.params.id}`);
-  // };
-  
-  // // Display book create form on GET.
-  // exports.book_create_get = async (req, res) => {
-    
-  //   res.send("NOT IMPLEMENTED: Book create GET");
-  // };
-  
-  // // Handle book create on POST.
- 
-
-  
-  // // Display book delete form on GET.
-  // exports.book_delete_get = (req, res) => {
-  //   res.send("NOT IMPLEMENTED: Book delete GET");
-  // };
-  
-  // // Handle book delete on POST.
-  // exports.book_delete_post = (req, res) => {
-  //   res.send("NOT IMPLEMENTED: Book delete POST");
-  // };
-  
-  // // Display book update form on GET.
-  // exports.book_update_get = (req, res) => {
-  //   res.send("NOT IMPLEMENTED: Book update GET");
-  // };
-  
-  // // Handle book update on POST.
-  // exports.book_update_post = (req, res) => {
-  //   res.send("NOT IMPLEMENTED: Book update POST");
-  // };
+exports.index = (req, res) => {
+  res.send("NOT IMPLEMENTED: Site Home Page");
+};
+exports.getAllCampaign = async (req, res) => {
+  const allCampaign = await Campaign.find({});
+  res.send(allCampaign);
+};
+exports.createCampaign = async (req, res) => {
+  const campaignInstance = new Campaign(
+    { 
+      name : req.body.name,
+      description: req.body.description,
+      donation_target: req.body.donation_target, 
+      public_key: req.body.public_key,
+      category: req.body.category,
+      status: req.body.status
+    });
+  await campaignInstance.save();
+  res.send(campaignInstance);
+}
+exports.getCampaignById = async (req,res)=>{
+  const id = req.query.id;
+  const result = await Campaign.findById(id);
+  res.send(result);
+}
+exports.getCampaignByCategory = async (req,res)=>{
+  const category = req.query.category;
+  const result = await Campaign.find({category: category});
+  res.send(result);
+}
+exports.getCampaignByStatus = async (req,res)=>{
+  const status = req.query.status;
+  console.log(status);
+  const results = await Campaign.find({status:status});
+  res.send(results);
+}
+exports.deleteCampaignById= async (req,res)=>{
+  const id = req.query.id;
+  console.log(id);
+  const result = await Campaign.findByIdAndDelete(id);
+  console.log(result);
+  res.send(result);
+}
+exports.changeStatusById = async (req,res)=>{
+  // console.log(req);
+  const id = req.body.id;
+  // console.log(id);
+  const campaign = await Campaign.findById(id);
+  console.log(campaign);
+  campaign.status = req.body.updated_status;
+  campaign.save();
+  res.send(campaign);
+}
+exports.updateTargetById = async (req,res)=>{
+  // console.log(req);
+  const id = req.body.id;
+  const deduct = req.body.deduct;
+  // console.log(id);
+  const campaign = await Campaign.findById(id);
+  // console.log(campaign);
+  let target = campaign.donation_target;
+  target = target-deduct;
+  campaign.donation_target = target;
+  campaign.save();
+  res.send(campaign);
+}

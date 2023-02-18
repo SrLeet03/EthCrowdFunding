@@ -11,7 +11,8 @@ const schema = new mongoose.Schema(
     date: { type: Date, default: Date.now },
     date_expired: Date,
     public_key: String,
-    category: String
+    category: String,
+    status: String,
   });
   
 schema.method("toJSON", function() {
