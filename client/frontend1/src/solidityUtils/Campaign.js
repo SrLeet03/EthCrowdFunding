@@ -1,55 +1,69 @@
-import { useEffect, useState } from "react"
-import { campaignAbi } from "../Constants"
+import { campaignAbi } from "../Constants/index.js"
 import { ethers } from "ethers"
 
-export default function Campaign(campaignAddress) {
-    const [connectedContract, setContract] = useState(undefined)
-    const [accounts, setAccounts] = useState(undefined)
+let contract, connectedContract, signer, provider
 
-    useEffect(() => {
-        const init = async () => {
-            const provider = new ethers.providers.Web3Provider(window.ethereum)
-            const signer = provider.getSigner()
-            const accounts = await ethers.getAccount()
-            const { chainId } = provider.getNetwork()
-
-            const contract = new ethers.Contract(
-                campaignAddress,
-                campaignAbi,
-                provider
-            )
-            const connectContract = await contract.connect(signer)
-
-            setContract(connectContract)
-            setAccounts(accounts)
-
-            try {
-            } catch (error) {
-                alert(
-                    `Failed to load web3, accounts, or contract. Did you migrate the contract or install MetaMask? Check console for details.`
-                )
-                console.error(error)
-            }
-        }
-        init()
-    }, [])
-
-    // ethers that the contributer decide to send
-    // Call this function when contributing the to a campaign
-    //
-    const Contribute = async (ethValueFromContributer) => {
-        let txResponse = await connectedContract.contribute({
-            value: ethers.utils.parseEther(ethValueFromContributer),
-        })
-        const txReciept = await txResponse.wait(6)
-
-        console.log(`transection Recipt ${txReciept}`)
+async function ConnectToContract(campaignAddress) {
+    window.ethereum.enable()
+    provider = new ethers.providers.Web3Provider(window.ethereum)
+    if (!provider) {
+        // not provider found
+        return { status: 400 }
     }
+    signer = provider.getSigner()
 
-    const Withdraw = async (requestId) => {
-        let txResponse = await connectedContract.withdraw()
-        const txReciept = await txResponse.wait(6)
+    contract = new ethers.Contract(campaignAddress, campaignAbi, provider)
+    connectedContract = await contract.connect(signer)
+}
 
-        console.log(`transection Recipt ${txReciept}`)
+const ContributeUtil = async (campaignAddress, ethValueFromContributer) => {
+    ConnectToContract(campaignAddress)
+
+    let FundTransferedEvent
+
+    let txResponse = await connectedContract.contribute({
+        value: ethers.utils.parseEther(ethValueFromContributer),
+    })
+    contract.on("FundTransfered", (contributerAddress, fundedAmount) => {
+        FundTransferedEvent = {
+            contributerAddress: contributerAddress,
+            fundedAmount: fundedAmount,
+        }
+        console.log(JSON.stringify(FundTransferedEvent, null, 4))
+    })
+
+    const txReciept = await txResponse.wait(2)
+
+    console.log(`transection Recipt ${txReciept}`)
+
+    return {
+        status: txReciept.status,
+        fundedAmount: FundTransferedEvent.fundedAmount,
     }
 }
+
+const WithdrawUtil = async (requestId) => {
+    let FundWithdrawedEvent
+
+    let txResponse = await connectedContract.withdraw(requestId)
+    const txReciept = await txResponse.wait(6)
+
+    contract.on("FundWithdrawed", (amount) => {
+        FundWithdrawedEvent = {
+            transferedAmount: amount,
+        }
+    })
+
+    console.log(`FundWithdrawed ${FundWithdrawedEvent}`)
+
+    return {
+        status: txReciept.status,
+        transferedAmount: FundWithdrawedEvent.transferedAmount,
+    }
+}
+
+const MakeRequestUtil = async (durationOfRequest, withdrawAmount) => {}
+
+const StakeInRequestUtil = async (requestId, voteValue) => {}
+
+export { ContributeUtil, WithdrawUtil, MakeRequestUtil, StakeInRequestUtil }
