@@ -3,9 +3,12 @@ import React from "react"
 import Alert from "react-bootstrap/Alert"
 
 import { Button } from "react-bootstrap"
+import { createRequestsForCampaign } from "../../hooks/campaign.js"
 
 export default function RequestBodyUtils({ data }) {
-    const handleSubmitRequest = () => {}
+    const handleSubmitRequest = () => {
+        // createRequestsForCampaign
+    }
     return (
         <div>
             <Alert style={{ width: "35rem" }} key="info" variant="info">

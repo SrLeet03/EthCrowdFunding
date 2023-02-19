@@ -76,6 +76,7 @@ async function CreateCampaignUtil(campaignGoal, address, minContribution = 1) {
     // const txReciept = await txResponse.wait(6) ;
     // console.log(txReciept) ;
 }
+
 async function GetCampaign(owner, campaignId) {
     const campaignAddress = await connectedContract.getCampaign(
         owner,

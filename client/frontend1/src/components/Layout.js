@@ -14,6 +14,8 @@ import Profile from './auth/Profile';
 import Signup from './auth/Signup';
 import { useSelector , useDispatch } from 'react-redux';
 import { setAuth } from '../redux/actions/action';
+import Homepage from './homepage/Homepage';
+
 const Layout = () => {
 
     
@@ -45,7 +47,7 @@ const Layout = () => {
         <>
         <Navbar/> 
             <Routes  >
-                <Route  path='/'  exact element={<LandingPage/> }  />
+                <Route  path='/'  exact element={<Homepage/> }  />
                 <Route  path='/fundraisers' exact element={<FundraiseList/>}/>
                 <Route  path='/fundraisers/create' exact element={<CreateCampaign/>}/>
                 <Route  path='/fundraisers/:id' exact element={<FundProfile/>}/>
