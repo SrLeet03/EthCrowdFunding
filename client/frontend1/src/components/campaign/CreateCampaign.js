@@ -63,10 +63,12 @@ function CreateCampaign() {
             campaign.amount,
             campaign.addr
         )
+        
         if (contract_result.status === 400) {
-            alert("Failed to create Campaign!")
+            alert("Failed to create Campaign!,check your Metamask connection")
             return
         }
+
         console.log("result", contract_result)
         let obj = campaign
         obj["addr"] = contract_result.address
