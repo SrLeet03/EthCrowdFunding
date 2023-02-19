@@ -40,8 +40,6 @@ async function updateContractAddresses() {
     const chainId = network.config.chainId.toString()
 
     if (chainId in contractAddresses) {
-        console.log(`contract Address ${crowdFunding.address}`)
-
         if (!contractAddresses[chainId].includes(crowdFunding.address)) {
             contractAddresses[chainId].push(crowdFunding.address)
         }

@@ -1,31 +1,50 @@
 import { crowdFundingAddresses, crowdFundingAbi } from "../Constants"
 import { useEffect, useState } from "react"
 import { ethers } from "ethers"
-require("dotenv").config()
+import { AuthProvider, CHAIN } from "@arcana/auth"
 
 export default function CrowdFunding() {
-    const provider = new ethers.providers.Web3Provider(window.ethereum)
-    const signer = provider.getSigner()
-    const { chainId } = provider._network.chainId
+    const auth = AuthProvider.getProvider()
+    try {
+    } catch {}
+    const [connectedContract, setContract] = useState(undefined)
+    const [accounts, setAccounts] = useState(undefined)
 
-    const crowdFindingAddress =
-        chainId in crowdFundingAddresses
-            ? crowdFundingAddresses[chainId][0]
-            : null
+    useEffect(() => {
+        const init = async () => {
+            const provider = new ethers.providers.Web3Provider(window.ethereum)
+            const signer = provider.getSigner()
+            const accounts = await ethers.getAccount()
+            const { chainId } = provider.getNetwork()
 
-    let contract, crowdFunding
-    const connectContract = async () => {
-        contract = new ethers.Contract(
-            crowdFindingAddress,
-            crowdFundingAbi,
-            provider
-        )
-    }
+            const crowdFindingAddress =
+                chainId in crowdFundingAddresses
+                    ? crowdFundingAddresses[chainId][0]
+                    : null
+
+            const contract = new ethers.Contract(
+                crowdFindingAddress,
+                crowdFundingAbi,
+                provider
+            )
+            const connectContract = await contract.connect(signer)
+
+            setContract(connectContract)
+            setAccounts(accounts)
+
+            try {
+            } catch (error) {
+                alert(
+                    `Failed to load web3, accounts, or contract. Did you migrate the contract or install MetaMask? Check console for details.`
+                )
+                console.error(error)
+            }
+        }
+        init()
+    }, [])
 
     const CreateCampaign = async (campaignGoal, minContribution) => {
-        crowdFunding = await contract.connect(signer)
-
-        const txResponse = await crowdFunding.createCampaign(
+        const txResponse = await connectedContract.createCampaign(
             campaignGoal,
             minContribution
         )
@@ -33,9 +52,7 @@ export default function CrowdFunding() {
     }
 
     const GetCampaign = async (owner, campaignId) => {
-        crowdFunding = await contract.connect(signer)
-
-        const campaignAddress = await crowdFunding.getCampaign(
+        const campaignAddress = await connectedContract.getCampaign(
             owner,
             campaignId
         )
@@ -43,19 +60,11 @@ export default function CrowdFunding() {
     }
 
     const GetAllCampaignOfOwner = async (owner) => {
-        crowdFunding = await contract.connect(signer)
-
-        await crowdFunding.getAllCampaignOfOwner(owner)
+        await connectedContract.getAllCampaignOfOwner(owner)
     }
 
     const GetTotalCampaignCreated = async () => {
-        crowdFunding = await contract.connect(signer)
-
-        const totalCampaign = await crowdFunding.getTotalCampaign()
+        const totalCampaign = await connectedContract.getTotalCampaign()
         return totalCampaign
     }
 }
-
-CreateCampaign().then((src) => {
-    console.log(src)
-})
