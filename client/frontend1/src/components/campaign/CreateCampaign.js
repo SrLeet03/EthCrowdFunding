@@ -8,6 +8,9 @@ import { TbArrowBarLeft } from "react-icons/tb";
 import Alert from 'react-bootstrap/Alert';
 import {isValidDate , compareDate} from '../../helper/utils.js' ;
 // import {CreateCampaign as CreateCampaignHlp} from '../Campign.js';
+// import {getConnection} from '../solidityUtils/index.js' ;
+
+import {getConnection} from '../../solidityUtils/CrowdFunding.js' ;
 
 function CreateCampaign() {
 
@@ -37,6 +40,8 @@ function CreateCampaign() {
     async function handleSubmit(e) {
         e.preventDefault();
         
+        console.log('test....')
+
         if (Object.values(campaign).includes(null)) {
           window.alert("Please enter all the values!");
           return ;
@@ -48,11 +53,11 @@ function CreateCampaign() {
            window.alert("Enter the valid date for deadline");
            return ;
         }
-
-        console.log(campaign);
-        // const result = await CreateCampaignHlp(5 , 10) ;
-        // console.log('result' , result);
-
+        console.log('test....')
+        console.log('campaign' , campaign);
+        
+        const result = await getConnection() ;
+        console.log('result' , result);
     }
 
   return (

@@ -12,7 +12,7 @@ import { BrowserRouter} from 'react-router-dom';
 
 var appAddress = '1939f3cd359859f261667548dfa898f390e957ec' ;
 
-const provider = new AuthProvider(`${appAddress}`) // required
+export const provider = new AuthProvider(`${appAddress}`) // required
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
