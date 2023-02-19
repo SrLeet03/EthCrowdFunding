@@ -4,12 +4,25 @@ CryptoFund is a decentralized crowdfunding platform built on blockchain technolo
 
 ## Table of Contents
 
+- [Prerequisites](#Prerequisites)
 - [Features](#features)
 - [Getting Started](#getting-started)
 - [Usage](#usage)
 - [Contributing](#contributing)
 - [License](#license)
 - [Contact Us](#contact-us)
+
+## Prerequisites
+
+Make sure you have the following installed:
+
+- Solidity: `sudo add-apt-repository ppa:ethereum/ethereum && sudo apt-get update && sudo apt-get install solc`
+- React: `npx create-react-app my-app`
+- Arcana: `npm install @arcana-network/client`
+- Mantle: `npm install @mantle-sdk/mantle`
+- Bootstrap: `npm install bootstrap`
+- Ethers: `npm install ethers`
+
 
 ## Features
 
