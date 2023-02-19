@@ -4,14 +4,14 @@ import axios from 'axios';
 async function createCampaign(payload){
     try{
         const result = await axios.post(`${URL}/createCampaign/`, {
-            name: payload.name,
-            description: payload.description,
-            donation_target: payload.donation_target,
-            public_key: payload.public_key ,
+            name: payload.title,
+            description: payload.desc,
+            donation_target: payload.amount,
+            public_key: payload.addr ,
             category:payload.category, 
-            profile: payload.profile,
-            date_expired: payload.date_expired,
-            status: payload.status,
+            // profile: null,
+            date_expired: payload.date,
+            status: "onGoing",
         })
         console.log(result);
         return result;

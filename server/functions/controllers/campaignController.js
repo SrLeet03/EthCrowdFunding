@@ -19,7 +19,7 @@ exports.createCampaign = async (req, res) => {
       public_key: req.body.public_key,
       category: req.body.category,
       status: req.body.status,
-      profile_path: req.file.filename 
+      // profile_path: req.file.filename 
     });
   await campaignInstance.save();
   res.send(campaignInstance);

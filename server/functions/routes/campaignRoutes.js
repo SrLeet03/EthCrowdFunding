@@ -23,7 +23,7 @@ router.get("/getAllCampaigns", campaignController.getAllCampaign);
 router.get("/getCampaignById", campaignController.getCampaignById);
 router.get("/getCampaignByCategory", campaignController.getCampaignByCategory);
 router.get("/getCampaignByStatus", campaignController.getCampaignByStatus);
-router.post("/createCampaign", upload.single('profile'),campaignController.createCampaign);
+router.post("/createCampaign",campaignController.createCampaign);
 router.delete("/deleteCampaignById", campaignController.deleteCampaignById);
 router.post("/updateStatusById",campaignController.changeStatusById);
 router.post("/updateTargetById",campaignController.updateTargetById);
