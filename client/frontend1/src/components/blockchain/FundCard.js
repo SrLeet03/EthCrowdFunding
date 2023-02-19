@@ -32,7 +32,7 @@ export default function FundCard({info}) {
                 <Card.Text>
                     <FaUserCircle/> By: {info.name}<br></br>
                      <BiChevronRight/> Date: {info.time}, {info.date}<br></br>
-                      {info.tagline}.
+                      { info.tagline!==undefined && info.tagline.length > 21?  info.tagline.slice(0 ,  20 ) : info.tagline}......
                 </Card.Text>
                 <Link to={`${url}/${info.title}`} > 
                 <Button variant="warning"  onClick={handleFunc} >Read more and Donate <FcCurrencyExchange/></Button>

@@ -7,6 +7,7 @@ async function getConnection() {
 
     // provider = auth.provider
     console.log("in getConnection")
+    window.ethereum.enable()
     const provider = new ethers.providers.Web3Provider(window.ethereum)
     console.log(`provider ${provider}`)
     const signer = provider.getSigner()

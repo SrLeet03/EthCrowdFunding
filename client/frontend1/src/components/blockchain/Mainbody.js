@@ -9,7 +9,7 @@ export default function FundProfile({ info }) {
     
     const profile = useSelector((state) => state.fundr.fundr)
 
-  //  console.log(profile);
+   console.log(profile);
 
     return (
         <div>
@@ -20,10 +20,10 @@ export default function FundProfile({ info }) {
                         
                        
                         <ul>
-                            <li>Dear friends,</li>
-                            <li>Currently, I am sustaining using some maintenance drugs until my
-                                 CarT treatment can start.</li>
-                            <li>Please share my case with more of your contacts.</li>
+                            <li>Dear friends,</li><br/>
+                            <br/>
+                            <b>{profile.tagline}</b>
+                            
                         </ul>
                         <h2>Important Notes</h2>
                         <p>We look to positively impact the lives we touch by making a difference each day. Change drives our business each and every day and our culture allows us to manage and embrace change by establishing core values:</p>
