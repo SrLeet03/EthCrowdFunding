@@ -52,7 +52,7 @@ const Layout = () => {
                 <Route  path='/list' exact element={<FundraiseList/>}/>
                 <Route  path='/signup' exact element={<Signup/>}/>
                 <Route  path='/myprofile'  element={<Profile/>} isAuth = {auth.state} />
-                <Route element={<Notfound/>}/>
+                <Route path="*" element={<Notfound/>}/>
             </Routes> 
            
         </>

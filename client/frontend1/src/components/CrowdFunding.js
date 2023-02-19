@@ -2,17 +2,37 @@ import { crowdFundingAddresses, crowdFundingAbi } from "../Constants"
 import { useEffect, useState } from "react"
 import { ethers } from "ethers"
 import { AuthProvider, CHAIN } from "@arcana/auth"
+import { ArcanaAppAddress } from "../helper/constants"
+
+const appAddress = ArcanaAppAddress
+
+const auth = new AuthProvider(`${appAddress}`, {
+    //required
+    network: "testnet", //defaults to 'testnet'
+    position: "left", //defaults to right
+    theme: "light", //defaults to dark
+    alwaysVisible: false, //defaults to true which is Full UI mode
+    chainConfig: {
+        chainId: CHAIN.POLYGON_MAINNET, //defaults to CHAIN.ETHEREUM_MAINNET
+        rpcUrl: "https://polygon-rpc.com", //defaults to 'https://rpc.ankr.com/eth'
+    },
+})
 
 export default function CrowdFunding() {
-    const auth = AuthProvider.getProvider()
-    try {
-    } catch {}
     const [connectedContract, setContract] = useState(undefined)
     const [accounts, setAccounts] = useState(undefined)
 
     useEffect(() => {
         const init = async () => {
-            const provider = new ethers.providers.Web3Provider(window.ethereum)
+            let provider
+            try {
+                provider = auth.provider
+                const connected = await auth.isLoggedIn()
+                console.log({ connected })
+                setHooks()
+            } catch (e) {
+                // Handle exception case
+            }
             const signer = provider.getSigner()
             const accounts = await ethers.getAccount()
             const { chainId } = provider.getNetwork()
@@ -68,3 +88,8 @@ export default function CrowdFunding() {
         return totalCampaign
     }
 }
+
+// CreateCampaign().then((src) => {
+
+//     console.log(src)
+// })
