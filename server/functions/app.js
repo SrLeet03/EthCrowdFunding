@@ -7,7 +7,7 @@ require("dotenv").config()
 
 
 var corsOptions = {
-  origin: "http://localhost:8080"
+  origin: "*"
 };
 
 app.use(cors(corsOptions));
@@ -35,7 +35,6 @@ db.mongoose
 // app.use("/campaign", campaignRoutes);
 
 app.use(`/.netlify/functions/app`, campaignRoutes);
-app.use('/.netlify/functions/app/profile', express.static('upload/images'));
 
 // const PORT = process.env.PORT || 8080;
 // app.listen(PORT, () => {

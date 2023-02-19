@@ -7,7 +7,7 @@ const auth = new AuthProvider(`${ArcanaAppAddress}`)
 
 window.onload = async () => {
   try {
-    await auth.init()
+    // await auth.init()
 
     const arcanaProvider = await auth.loginWithSocial('google')
     const provider = new ethers.providers.Web3Provider(arcanaProvider)

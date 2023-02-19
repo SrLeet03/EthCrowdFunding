@@ -41,6 +41,14 @@ async function getConnection() {
     const txResponse = await connectContract.createCampaign(2, 2)
     const txReciept = await txResponse.wait(6)
     console.log(txReciept)
+    // const connectContract = await contract.connect(signer)
+
+    // const txResponse = await connectContract.createCampaign(
+    //     2,
+    //     2
+    // )
+    // const txReciept = await txResponse.wait(6) ;
+    // console.log(txReciept) ;
 }
 
 export { getConnection }

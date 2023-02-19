@@ -11,6 +11,7 @@ import {isValidDate , compareDate} from '../../helper/utils.js' ;
 // import {getConnection} from '../solidityUtils/index.js' ;
 
 import {getConnection} from '../../solidityUtils/CrowdFunding.js' ;
+import {createCampaign} from '../../hooks/campaign.js' ;
 
 function CreateCampaign() {
 
@@ -56,8 +57,13 @@ function CreateCampaign() {
         console.log('test....')
         console.log('campaign' , campaign);
         
-        const result = await getConnection() ;
-        console.log('result' , result);
+        // const result = await getConnection() ;
+        // console.log('result' , result);
+
+        
+        const bc_res = await createCampaign(campaign) ;
+        // if(bc_res)
+        console.log("bc_res , " , bc_res)
     }
 
   return (

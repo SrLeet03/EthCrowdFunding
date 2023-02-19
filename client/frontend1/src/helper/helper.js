@@ -1,1 +1,1 @@
-export const URL ="http://localhost:4050"
+export const URL ="http://localhost:8888/.netlify/functions/app/"
