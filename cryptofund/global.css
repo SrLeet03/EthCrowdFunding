@@ -1,0 +1,19 @@
+:root {
+  /* fonts */
+  --font-poppins: Poppins;
+
+  /* font sizes */
+  --font-size-base: 14px;
+  --font-size-lg: 16px;
+  --font-size-xl: 18px;
+  --font-size-2xl: 20px;
+  --font-size-3xl: 32px;
+
+  /* Colors */
+  --color-white: #fff;
+  --color-gray-100: #f8fcfd;
+  --color-gray-200: #000910;
+  --color-steelblue: #108eb6;
+  --color-black: #000;
+  --color-aliceblue: #e7f4f8;
+}
