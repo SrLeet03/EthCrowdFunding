@@ -10,14 +10,15 @@ exports.getAllCampaign = async (req, res) => {
   res.send(allCampaign);
 };
 exports.createCampaign = async (req, res) => {
+  console.log(req);
   const campaignInstance = new Campaign(
     { 
-      name : req.data.name,
-      description: req.data.description,
-      donation_target: req.data.donation_target, 
-      public_key: req.data.public_key,
-      category: req.data.category,
-      status: req.data.status,
+      name : req.body.name,
+      description: req.body.description,
+      donation_target: req.body.donation_target, 
+      public_key: req.body.public_key,
+      category: req.body.category,
+      status: req.body.status,
       profile_path: req.file.filename 
     });
   await campaignInstance.save();

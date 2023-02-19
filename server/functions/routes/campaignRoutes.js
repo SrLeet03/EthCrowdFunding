@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const campaignController = require('../controllers/campaignController');
 const multer = require("multer");
+const path = require("path");
 
 const storage = multer.diskStorage({
     destination: './upload/images',
@@ -13,7 +14,7 @@ const storage = multer.diskStorage({
 const upload = multer({
     storage: storage,
     limits: {
-        fileSize: 10
+        fileSize: 1000000
     }
 })
 
