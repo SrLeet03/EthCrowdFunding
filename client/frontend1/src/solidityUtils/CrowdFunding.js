@@ -1,56 +1,49 @@
-import { crowdFundingAddresses, crowdFundingAbi } from "../Constants/index.js";
+import { crowdFundingAddresses, crowdFundingAbi } from "../Constants/index.js"
 import { useEffect, useState } from "react"
 import { ethers } from "ethers"
-import { AuthProvider, CHAIN } from "@arcana/auth"
-import { ArcanaAppAddress } from "../helper/constants"
-
-import {provider} from '../index.js' ;
-
-
-
-// const auth = new AuthProvider(`${appAddress}`, {
-//     //required
-//     network: "testnet", //defaults to 'testnet'
-//     // position: "left", //defaults to right
-//     // theme: "light", //defaults to dark
-//     // alwaysVisible: false, //defaults to true which is Full UI mode
-//     // chainConfig: {
-//     //     chainId: CHAIN.POLYGON_MAINNET, //defaults to CHAIN.ETHEREUM_MAINNET
-//     //     rpcUrl: "https://polygon-rpc.com", //defaults to 'https://rpc.ankr.com/eth'
-//     // },
-// })
 
 async function getConnection() {
-        // let provider ;
-         
-        // provider = auth.provider
-        // const providers = new ethers.providers.Web3Provider(window.ethereum)
-        const signer = provider.getSigner()
-        const {chainId} = provider.getNetwork();
-        const crowdFindingAddress =
-                        chainId in crowdFundingAddresses
-                            ? crowdFundingAddresses[chainId][0]
-                            : null
-        
-        const contract = new ethers.Contract(
-                        crowdFindingAddress,
-                        crowdFundingAbi,
-                        provider
-                    )
+    // let provider ;
 
+    // provider = auth.provider
+    console.log("in getConnection")
+    const provider = new ethers.providers.Web3Provider(window.ethereum)
+    console.log(`provider ${provider}`)
+    const signer = provider.getSigner()
+    // const { chainId } = provider.getNetwork()
+    const chainId = 5001 // Mantle chain ID
 
+    const crowdFindingAddress =
+        chainId in crowdFundingAddresses
+            ? crowdFundingAddresses[chainId][0]
+            : null
+    console.log(`crowdFunding ${crowdFindingAddress}`)
+    const contract = new ethers.Contract(
+        crowdFindingAddress,
+        crowdFundingAbi,
+        provider
+    )
 
-        const connectContract = await contract.connect(signer)
-        
-        const txResponse = await connectContract.createCampaign(
-            2,
-            2
-        )
-        const txReciept = await txResponse.wait(6) ;
-        console.log(txReciept) ;
+    contract.on(
+        "CampaignCreated",
+        (ownerAddress, campaignId, campaignAddress) => {
+            let camapignCreatedEvent = {
+                owner: ownerAddress,
+                campaignId: campaignId,
+                campaignAddress: campaignAddress,
+            }
+            console.log(JSON.stringify(camapignCreatedEvent, null, 4))
+        }
+    )
+
+    const connectContract = await contract.connect(signer)
+
+    const txResponse = await connectContract.createCampaign(2, 2)
+    const txReciept = await txResponse.wait(6)
+    console.log(txReciept)
 }
 
-export {getConnection} ; 
+export { getConnection }
 
 // getConnection() ;
 
