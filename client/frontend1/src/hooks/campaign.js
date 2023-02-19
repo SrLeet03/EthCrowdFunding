@@ -33,6 +33,38 @@ async function getAllCampaign(){
         return err;
     }
 }
+
+async function getAllRequestsForCampaign(cid){
+    try{
+        const result = await axios.post(`${URL}/request/getAllRequestBycid/`, {
+            cid: cid
+        })
+        console.log(result);
+        return result;
+    }
+    catch(err){
+        console.log(err);
+        return err;
+    }
+}
+
+async function createRequestsForCampaign(cid , rid , info , amt){
+    try{
+        const result = await axios.post(`${URL}/request/createRequest/`, {
+            cid: cid,
+            rid : cid, 
+            info : info , 
+            amount : amt
+        })
+        console.log(result);
+        return result;
+    }
+    catch(err){
+        console.log(err);
+        return err;
+    }
+}
+
 async function getCampaignById(payload){
     try{
         const result = await axios.get(`${URL}/getCampaignById/`,
@@ -128,7 +160,8 @@ async function updateTargetById(payload){
 //createCampaign(payload);
 // updateTargetById(payload);
 
-export {createCampaign};
+export {createCampaign ,createRequestsForCampaign};
+export {getAllRequestsForCampaign} ;
 export {getAllCampaign};
 export {getCampaignById};
 export {getCampaignByCategory};
