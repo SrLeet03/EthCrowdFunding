@@ -8,11 +8,14 @@ import reportWebVitals from './reportWebVitals';
 import { AuthProvider } from "@arcana/auth";
 import { ProvideAuth } from "@arcana/auth-react";
 
+import {  useAuth } from "@arcana/auth-react";
+
 import { BrowserRouter} from 'react-router-dom';
 
 var appAddress = '1939f3cd359859f261667548dfa898f390e957ec' ;
 
 export const provider = new AuthProvider(`${appAddress}`) // required
+
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
