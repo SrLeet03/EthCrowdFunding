@@ -12,7 +12,7 @@ Once your campaign is live, people can donate to your campaign using cryptocurre
 
 ## Voting System
 
-One of the unique features of CryptoFund is its voting system. Donors who donate to your campaign will have the ability to vote on which requests to spend money on. This ensures that the funds raised go toward the most important needs of your campaign.
+One of the unique features of CryptoFund is its voting system. When a campaign wants to retrieve the money that has been generated, it can post requests which will then be put to a vote among all the contributors.This way donors who donate to your campaign will have the ability to vote on which requests to spend money on. This ensures that the funds raised go toward the most important needs of your campaign.
 
 ## Campaigns
 
@@ -22,6 +22,7 @@ Campaigns on CryptoFund fall under the following categories:
 - Education
 - Social Service
 - Creativity
+- Environment
 
 ## Contributing
 
