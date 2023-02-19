@@ -2,15 +2,17 @@ import { crowdFundingAddresses, crowdFundingAbi } from "../Constants/index.js"
 import { useEffect, useState } from "react"
 import { ethers } from "ethers"
 
-async function getConnection() {
-    // let provider ;
+let contract, connectedContract, signer
 
+async function ConnectToContract() {
     // provider = auth.provider
-    console.log("in getConnection")
     window.ethereum.enable()
     const provider = new ethers.providers.Web3Provider(window.ethereum)
-    console.log(`provider ${provider}`)
-    const signer = provider.getSigner()
+    if (!provider) {
+        // not provider found
+        return { status: 400 }
+    }
+    signer = provider.getSigner()
     // const { chainId } = provider.getNetwork()
     const chainId = 5001 // Mantle chain ID
 
@@ -18,17 +20,27 @@ async function getConnection() {
         chainId in crowdFundingAddresses
             ? crowdFundingAddresses[chainId][0]
             : null
-    console.log(`crowdFunding ${crowdFindingAddress}`)
-    const contract = new ethers.Contract(
+    contract = new ethers.Contract(
         crowdFindingAddress,
         crowdFundingAbi,
         provider
     )
+    connectedContract = await contract.connect(signer)
+}
 
+async function CreateCampaignUtil(campaignGoal, address, minContribution = 1) {
+    ConnectToContract()
+
+    if (address !== signer) {
+        return { status: 400 }
+    }
+    console.log(`address ${address} signer ${signer}`)
+    let camapignCreatedEvent
+    // Listening to event
     contract.on(
         "CampaignCreated",
         (ownerAddress, campaignId, campaignAddress) => {
-            let camapignCreatedEvent = {
+            camapignCreatedEvent = {
                 owner: ownerAddress,
                 campaignId: campaignId,
                 campaignAddress: campaignAddress,
@@ -37,11 +49,18 @@ async function getConnection() {
         }
     )
 
-    const connectContract = await contract.connect(signer)
-
-    const txResponse = await connectContract.createCampaign(2, 2)
+    const txResponse = await connectedContract.createCampaign(
+        campaignGoal,
+        minContribution
+    )
     const txReciept = await txResponse.wait(6)
     console.log(txReciept)
+
+    return {
+        status: txReciept.status,
+        address: camapignCreatedEvent.campaignAddress,
+    }
+
     // const connectContract = await contract.connect(signer)
 
     // const txResponse = await connectContract.createCampaign(
@@ -51,8 +70,25 @@ async function getConnection() {
     // const txReciept = await txResponse.wait(6) ;
     // console.log(txReciept) ;
 }
+async function GetCampaign(owner, campaignId) {
+    const campaignAddress = await connectedContract.getCampaign(
+        owner,
+        campaignId
+    )
+    console.log(campaignAddress)
+    return campaignAddress
+}
 
-export { getConnection }
+const GetAllCampaignOfOwner = async (owner) => {
+    await connectedContract.getAllCampaignOfOwner(owner)
+}
+
+const GetTotalCampaignCreated = async () => {
+    const totalCampaign = await connectedContract.getTotalCampaign()
+    return totalCampaign
+}
+
+export { ConnectToContract, CreateCampaignUtil }
 
 // getConnection() ;
 
