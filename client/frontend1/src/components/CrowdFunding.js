@@ -29,7 +29,6 @@ export default function CrowdFunding() {
                 provider = auth.provider
                 const connected = await auth.isLoggedIn()
                 console.log({ connected })
-                setHooks()
             } catch (e) {
                 // Handle exception case
             }
