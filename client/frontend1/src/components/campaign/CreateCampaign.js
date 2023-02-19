@@ -60,9 +60,10 @@ function CreateCampaign() {
         console.log("campaign", campaign)
 
         const contract_result = await CreateCampaignUtil(
-            campaign.amount,
-            campaign.addr
+            2,
+            0x918fd2c5991feac1553dd783161eca6e15b1abcd
         )
+
         if (contract_result.status === 400) {
             alert("Failed to create Campaign!")
             return

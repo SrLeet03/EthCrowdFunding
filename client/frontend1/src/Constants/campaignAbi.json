@@ -146,6 +146,21 @@
     },
     {
         "type": "function",
+        "name": "getRequestInfo",
+        "constant": true,
+        "stateMutability": "view",
+        "payable": false,
+        "inputs": [{ "type": "uint256", "name": "requestId" }],
+        "outputs": [
+            { "type": "uint256" },
+            { "type": "uint256" },
+            { "type": "uint256" },
+            { "type": "uint256" },
+            { "type": "bool" }
+        ]
+    },
+    {
+        "type": "function",
         "name": "getTotalContributers",
         "constant": true,
         "stateMutability": "view",

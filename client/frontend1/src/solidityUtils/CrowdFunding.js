@@ -1,16 +1,15 @@
 import { crowdFundingAddresses, crowdFundingAbi } from "../Constants/index.js"
-import { useEffect, useState } from "react"
 import { ethers } from "ethers"
 
-let contract, connectedContract, signer
+let contract, connectedContract, signer, provider
 
 async function ConnectToContract() {
     // provider = auth.provider
     window.ethereum.enable()
-    const provider = new ethers.providers.Web3Provider(window.ethereum)
+    provider = new ethers.providers.Web3Provider(window.ethereum)
     if (!provider) {
         // not provider found
-        return { status: 400 }
+        // return { status: 400 }
     }
     signer = provider.getSigner()
     // const { chainId } = provider.getNetwork()
@@ -31,10 +30,15 @@ async function ConnectToContract() {
 async function CreateCampaignUtil(campaignGoal, address, minContribution = 1) {
     ConnectToContract()
 
-    if (address !== signer) {
-        return { status: 400 }
-    }
-    console.log(`address ${address} signer ${signer}`)
+    let accounts = await provider.send("eth_requestAccounts", [])
+
+    // console.log(`accounts ${JSON.stringify(accounts)}`)
+    let account = accounts[0]
+
+    // if (address.toUpperCase() === account.toUpperCase()) {
+    //return { status: 400 }
+    // }
+    // console.log(`address ${address} accounts ${JSON.stringify(account)}`)
     let camapignCreatedEvent
     // Listening to event
     contract.on(
@@ -53,8 +57,10 @@ async function CreateCampaignUtil(campaignGoal, address, minContribution = 1) {
         campaignGoal,
         minContribution
     )
-    const txReciept = await txResponse.wait(6)
+    const txReciept = await txResponse.wait(2)
     console.log(txReciept)
+    console.log("---------------------")
+    console.log(`status${txReciept.status}`)
 
     return {
         status: txReciept.status,
@@ -88,7 +94,13 @@ const GetTotalCampaignCreated = async () => {
     return totalCampaign
 }
 
-export { ConnectToContract, CreateCampaignUtil }
+export {
+    ConnectToContract,
+    CreateCampaignUtil,
+    GetCampaign,
+    GetAllCampaignOfOwner,
+    GetTotalCampaignCreated,
+}
 
 // getConnection() ;
 
