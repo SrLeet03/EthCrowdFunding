@@ -9,6 +9,7 @@ import FundCard from './FundCard';
 import axios from 'axios';
 import { setFundrs } from '../../redux/actions/action';
 import { useNavigate , useLocation   } from 'react-router';
+import { getAllCampaign } from '../../hooks/campaign.js';
 
 // import Parent from '../../pages/card/Parent';
 import Card from '../../pages/card/Card';
@@ -24,13 +25,13 @@ export default function FundraiseList() {
     
     useEffect(() => {
 
-        axios.get(`${URL}/getpost/${tag}`)
-            .then((result) => {
-                setAllf(result.data);
-                dispatch(setFundrs(result.data));
-            }).catch((err) => {
-                console.log(err);
-            })
+        getAllCampaign().then((result)=>{
+            console.log('res ->' , result.data) ;
+            setAllf(result.data);
+            dispatch(setFundrs(result.data));
+        }).catch((serr)=>{
+            alert("failed to get campaigns!");
+        })
 
     }, []);
     const handleselect = (arg) => {
@@ -97,14 +98,14 @@ export default function FundraiseList() {
                         allf.map((value, key) => {
                             //console.log(value);
                             const prop = {
-                                name: value.userid,
-                                title: value.title,
+                                name: value.id,
+                                title: value.name,
                                 time : value.creationtime,
                                 date: value.date,
-                                tag  :value.tag,
-                                amount:value.amount,
+                                tag  :value.category,
+                                amount:value.donation_target,
                                 days : value.days,
-                                tagline: "Some quick example text to build on the card title and make up the bulk of the card's"
+                                tagline: value.description
                             }
                              return <FundCard info={prop} />;
                             // return <Parent/>

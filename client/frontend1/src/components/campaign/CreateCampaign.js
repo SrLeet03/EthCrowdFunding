@@ -64,6 +64,13 @@ function CreateCampaign() {
         const bc_res = await createCampaign(campaign) ;
         // if(bc_res)
         console.log("bc_res , " , bc_res)
+        if (bc_res.status === 200){
+          alert("Campaign Craeted!!") ; 
+          history("/fundraisers");
+          return ;
+        }else{
+           alert("Failed to create campaign!") ;
+        }
     }
 
   return (
