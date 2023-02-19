@@ -2,15 +2,17 @@ import { crowdFundingAddresses, crowdFundingAbi } from "../Constants/index.js"
 import { useEffect, useState } from "react"
 import { ethers } from "ethers"
 
-let contract, connectedContract
+let contract, connectedContract, signer
 
 async function ConnectToContract() {
+    // provider = auth.provider
+    window.ethereum.enable()
     const provider = new ethers.providers.Web3Provider(window.ethereum)
     if (!provider) {
         // not provider found
-        return
+        return { status: 400 }
     }
-    const signer = provider.getSigner()
+    signer = provider.getSigner()
     // const { chainId } = provider.getNetwork()
     const chainId = 5001 // Mantle chain ID
 
@@ -26,8 +28,13 @@ async function ConnectToContract() {
     connectedContract = await contract.connect(signer)
 }
 
-async function CreateCampaignUtil(campaignGoal, minContribution) {
+async function CreateCampaignUtil(campaignGoal, address, minContribution = 1) {
     ConnectToContract()
+
+    if (address !== signer) {
+        return { status: 400 }
+    }
+    console.log(`address ${address} signer ${signer}`)
     let camapignCreatedEvent
     // Listening to event
     contract.on(

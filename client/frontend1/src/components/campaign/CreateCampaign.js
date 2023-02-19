@@ -59,12 +59,27 @@ function CreateCampaign() {
         console.log("test....")
         console.log("campaign", campaign)
 
-        const result = await CreateCampaignUtil(2, 2)
-        console.log("result", result)
-
-        const bc_res = await createCampaign(campaign)
+        const contract_result = await CreateCampaignUtil(
+            campaign.amount,
+            campaign.addr
+        )
+        if (contract_result.status === 400) {
+            alert("Failed to create Campaign!")
+            return
+        }
+        console.log("result", contract_result)
+        let obj = campaign
+        obj["addr"] = contract_result.address
+        const bc_res = await createCampaign(obj)
         // if(bc_res)
         console.log("bc_res , ", bc_res)
+        if (bc_res.status === 200) {
+            alert("Campaign Craeted!!")
+            history("/fundraisers")
+            return
+        } else {
+            alert("Failed to create campaign!")
+        }
     }
 
     return (
