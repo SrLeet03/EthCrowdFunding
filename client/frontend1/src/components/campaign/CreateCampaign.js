@@ -63,7 +63,7 @@ function CreateCampaign() {
             campaign.amount ? campaign.amount : 2,
             campaign.addr
                 ? campaign.addr
-                : 0x918fd2c5991feac1553dd783161eca6e15b1abcd
+                : "0x918fd2c5991feac1553dd783161eca6e15b1abcd"
         )
 
         if (contract_result.status === 400) {

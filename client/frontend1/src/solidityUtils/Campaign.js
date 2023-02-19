@@ -4,7 +4,6 @@ import { ethers } from "ethers"
 let contract, connectedContract, signer, provider
 
 async function ConnectToContract(campaignAddress) {
-    // provider = auth.provider
     window.ethereum.enable()
     provider = new ethers.providers.Web3Provider(window.ethereum)
     if (!provider) {
@@ -17,7 +16,7 @@ async function ConnectToContract(campaignAddress) {
     connectedContract = await contract.connect(signer)
 }
 
-const Contribute = async (campaignAddress, ethValueFromContributer) => {
+const ContributeUtil = async (campaignAddress, ethValueFromContributer) => {
     ConnectToContract(campaignAddress)
 
     let FundTransferedEvent
@@ -43,11 +42,28 @@ const Contribute = async (campaignAddress, ethValueFromContributer) => {
     }
 }
 
-const Withdraw = async (requestId) => {
-    let txResponse = await connectedContract.withdraw()
+const WithdrawUtil = async (requestId) => {
+    let FundWithdrawedEvent
+
+    let txResponse = await connectedContract.withdraw(requestId)
     const txReciept = await txResponse.wait(6)
 
-    console.log(`transection Recipt ${txReciept}`)
+    contract.on("FundWithdrawed", (amount) => {
+        FundWithdrawedEvent = {
+            transferedAmount: amount,
+        }
+    })
+
+    console.log(`FundWithdrawed ${FundWithdrawedEvent}`)
+
+    return {
+        status: txReciept.status,
+        transferedAmount: FundWithdrawedEvent.transferedAmount,
+    }
 }
 
-export { Contribute, Withdraw }
+const MakeRequestUtil = async (durationOfRequest, withdrawAmount) => {}
+
+const StakeInRequestUtil = async (requestId, voteValue) => {}
+
+export { ContributeUtil, WithdrawUtil, MakeRequestUtil, StakeInRequestUtil }
