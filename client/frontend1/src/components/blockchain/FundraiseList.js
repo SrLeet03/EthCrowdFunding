@@ -27,7 +27,7 @@ export default function FundraiseList() {
 
         getAllCampaign().then((result)=>{
             console.log('res ->' , result.data) ;
-            setAllf(result.data);
+          if(result.data !== undefined && result.data.length > 0)  setAllf(result.data);
             dispatch(setFundrs(result.data));
         }).catch((serr)=>{
             alert("failed to get campaigns!");
