@@ -6,7 +6,7 @@ import Loader from './pages/Loader';
 
 import {Provider} from 'react-redux'
 import store from './redux/store' ; 
-// import { Auth, useAuth } from "@arcana/auth-react";
+import { Auth, useAuth } from "@arcana/auth-react";
 
 
 
@@ -18,20 +18,20 @@ const onLogin = () => {
 
 function App() {
 
-  // const auth = useAuth();
+  const auth = useAuth();
 
   return (
     <div className="App">
         <Provider store = {store}>
-            {/* {auth.loading ? (
+            {auth.loading ? (
               <Loader/>
-            ) : auth.isLoggedIn ? ( */}
+            ) : auth.isLoggedIn ? (
               <Layout/>
-            {/* ) : (
+             ) : (
               <div>
                 <Auth externalWallet={true} theme={"light"} onLogin={onLogin}/>
               </div>
-            )} */}
+            )} 
         </Provider>   
 
     </div>

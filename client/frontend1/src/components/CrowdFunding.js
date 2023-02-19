@@ -3,7 +3,7 @@ import { useEffect, useState } from "react"
 import { ethers } from "ethers"
 require("dotenv").config()
 
-export default function CrowdFunding() {
+// export default function CrowdFunding() {
     const provider = new ethers.providers.Web3Provider(window.ethereum)
     const signer = provider.getSigner()
     const { chainId } = provider._network.chainId
@@ -54,8 +54,10 @@ export default function CrowdFunding() {
         const totalCampaign = await crowdFunding.getTotalCampaign()
         return totalCampaign
     }
-}
+// }
 
-CreateCampaign().then((src) => {
-    console.log(src)
-})
+// CreateCampaign().then((src) => {
+//     console.log(src)
+// })
+
+export {CreateCampaign} ;
