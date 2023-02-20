@@ -4,12 +4,14 @@ pragma solidity ^0.8.8;
 
 import "./Stake.sol";
 
-error Campaign__SendMinFund();
-error Campaign__NotOwner();
-error Campaign__NotEnoughToWithdraw();
+error Campaign__SendMinFund(uint256 value, uint256 minContribution);
+error Campaign__NotOwner(address sender, address owner);
+error Campaign__NotEnoughToWithdraw(
+    uint256 amountNeedToWithdraw,
+    uint256 contractBalance
+);
 error Campaign__RequestIsUnderProcess();
 error Campaign__RequestRejected();
-error Campaign__NotAnEligiableContributer();
 error Campaign__ContributionTransactionFailed();
 error Campaign__WithdrawTransactionFailed();
 error Campaign__NoEnoughAmount();
@@ -38,7 +40,7 @@ contract Campaign is Stake {
 
     modifier onlyOwner() {
         if (msg.sender != s_owner) {
-            revert Campaign__NotOwner();
+            revert Campaign__NotOwner(msg.sender, s_owner);
         }
         _;
     }
@@ -69,7 +71,7 @@ contract Campaign is Stake {
 
     function contribute() public payable {
         if (msg.value < i_minContribution) {
-            revert Campaign__SendMinFund();
+            revert Campaign__SendMinFund(msg.value, i_minContribution);
         }
         (bool sent, ) = address(this).call{value: msg.value}("");
 
@@ -89,7 +91,7 @@ contract Campaign is Stake {
     ) public payable onlyOwner permissionIssued(requestIndex) {
         uint256 amount = getRequestedAmount(s_requests[requestIndex]);
         if (address(this).balance < amount) {
-            revert Campaign__NotEnoughToWithdraw();
+            revert Campaign__NotEnoughToWithdraw(amount, address(this).balance);
         }
         (bool sent, ) = s_owner.call{value: amount}("");
 
@@ -200,12 +202,18 @@ contract Campaign is Stake {
 
     function getRequestInfo(
         uint256 requestId
-    ) public view returns (uint256, uint256, uint256, uint256, bool) {
+    )
+        public
+        view
+        returns (uint256, uint256, uint256, uint32, uint256, uint256, bool)
+    {
         return (
             s_requests[requestId].requestedAmount,
             s_requests[requestId].requestedTime,
             s_requests[requestId].durationOfRequest,
-            uint256(s_requests[requestId].currentStatus),
+            uint32(s_requests[requestId].currentStatus),
+            s_requests[requestId].totalAcceptVote,
+            s_requests[requestId].totalRejectVote,
             s_requests[requestId].amountRecieved
         );
     }
