@@ -192,16 +192,11 @@ contract Campaign is Stake {
         return (amount * bps) / totalAmount;
     }
 
-    // uint256 durationOfRequest;
-    //     uint256 requestedAmount;
-    //     uint256 requestedTime;
-    //     address campaignAddress;
-    //     // Voting variables
-    //     uint256 totalAcceptVote;
-    //     uint256 totalRejectVote;
-    //     // status
-    //     CampaignLib.permission currentStatus;
-    //     bool amountRecieved;
+    function getRequestStatus(uint256 requestId) public view returns (uint32) {
+        return uint32(s_requests[requestId].currentStatus);
+    }
+
+    bool amountRecieved;
 
     function getRequestInfo(
         uint256 requestId

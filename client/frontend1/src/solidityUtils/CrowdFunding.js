@@ -48,7 +48,7 @@ async function CreateCampaignUtil(campaignGoal, address, minContribution = 1) {
                 campaignId: campaignId,
                 campaignAddress: campaignAddress,
             }
-            console.log(JSON.stringify(camapignCreatedEvent, null, 4))
+            console.log(camapignCreatedEvent)
         }
     )
 
@@ -57,7 +57,7 @@ async function CreateCampaignUtil(campaignGoal, address, minContribution = 1) {
         minContribution
     )
     const txReciept = await txResponse.wait(2)
-    console.log(txReciept)
+    // console.log(txReciept)
 
     // console.log("---------------------")
     // console.log(`status${txReciept.status}`)
@@ -67,7 +67,7 @@ async function CreateCampaignUtil(campaignGoal, address, minContribution = 1) {
     // console.log("---------------------")
 
     return {
-        status: txReciept.status,
+        status: txReciept.status == 1 ? 200 : 400,
         address: camapignCreatedEvent.campaignAddress,
     }
 }
@@ -77,8 +77,7 @@ async function GetCampaign(owner, campaignId) {
         owner,
         campaignId
     )
-    console.log("gettign camaping address")
-    console.log(JSON.stringify(campaignAddress))
+
     return campaignAddress
 }
 
@@ -88,9 +87,8 @@ const GetAllCampaignOfOwner = async (owner) => {
 
 const GetTotalCampaignCreated = async () => {
     var totalCampaign = await connectedContract.getTotalCampaign()
-    console.log("gettign total campaign created")
-    console.log(JSON.stringify(totalCampaign))
-    return totalCampaign
+    console.log(`total campaign ${totalCampaign._hex}`)
+    return totalCampaign._hex
 }
 
 export {
