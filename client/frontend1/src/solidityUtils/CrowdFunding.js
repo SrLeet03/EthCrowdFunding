@@ -2,6 +2,7 @@ import { crowdFundingAddresses, crowdFundingAbi } from "../Constants/index.js"
 import { ethers } from "ethers"
 
 let contract, connectedContract, signer, provider
+var error, retReq
 
 async function ConnectToContract() {
     // provider = auth.provider
@@ -9,7 +10,7 @@ async function ConnectToContract() {
     provider = new ethers.providers.Web3Provider(window.ethereum)
     if (!provider) {
         // not provider found
-        // return { status: 400 }
+        return { status: 400, msg: "Provider/'Metamask not recoganizer" }
     }
     signer = provider.getSigner()
     // const { chainId } = provider.getNetwork()
@@ -30,46 +31,54 @@ async function ConnectToContract() {
 async function CreateCampaignUtil(campaignGoal, address, minContribution = 1) {
     ConnectToContract()
 
-    let accounts = await provider.send("eth_requestAccounts", [])
+    try {
+        let accounts = await provider.send("eth_requestAccounts", [])
 
-    // console.log(`accounts ${JSON.stringify(accounts)}`)
-    let account = accounts[0]
+        let account = accounts[0]
 
-    // if (address.toUpperCase() === account.toUpperCase()) {
-    //     return { status: 400 }
-    // }
-    let camapignCreatedEvent
-    // Listening to event
-    contract.on(
-        "CampaignCreated",
-        (ownerAddress, campaignId, campaignAddress) => {
-            camapignCreatedEvent = {
-                owner: ownerAddress,
-                campaignId: campaignId,
-                campaignAddress: campaignAddress,
+        if (
+            address.toString().toUpperCase() ===
+            account.toString().toUpperCase()
+        ) {
+            return {
+                status: 400,
+                msg: "address does not match with metamask wallet",
             }
-            console.log(camapignCreatedEvent)
         }
-    )
+        var camapignCreatedEvent
 
-    const txResponse = await connectedContract.createCampaign(
-        campaignGoal,
-        minContribution
-    )
-    const txReciept = await txResponse.wait(2)
-    // console.log(txReciept)
+        contract.on(
+            "CampaignCreated",
+            (ownerAddress, campaignId, campaignAddress) => {
+                camapignCreatedEvent = {
+                    owner: ownerAddress,
+                    campaignId: campaignId,
+                    campaignAddress: campaignAddress,
+                }
+                console.log(camapignCreatedEvent)
+            }
+        )
 
-    // console.log("---------------------")
-    // console.log(`status${txReciept.status}`)
-
-    // console.log("---------------------")
-    // const contract_result = await GetTotalCampaignCreated()
-    // console.log("---------------------")
-
-    return {
-        status: txReciept.status == 1 ? 200 : 400,
-        address: camapignCreatedEvent.campaignAddress,
+        const txResponse = await connectedContract.createCampaign(
+            campaignGoal,
+            minContribution
+        )
+        var txReciept = await txResponse.wait(2)
+    } catch (e) {
+        error = e
     }
+    console.log(txReciept)
+
+    if (txReciept.status == 1) {
+        retReq = {
+            status: 200,
+            campaignId: camapignCreatedEvent.campaignId._hex,
+        }
+    } else {
+        retReq = { status: 400, msg: error }
+    }
+
+    return retReq
 }
 
 async function GetCampaign(owner, campaignId) {
@@ -78,7 +87,7 @@ async function GetCampaign(owner, campaignId) {
         campaignId
     )
 
-    return campaignAddress
+    return { status: 200, campaignAddress }
 }
 
 const GetAllCampaignOfOwner = async (owner) => {

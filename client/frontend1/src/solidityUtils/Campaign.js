@@ -3,11 +3,13 @@ import { ethers } from "ethers"
 
 let contract, connectedContract, signer, provider
 
+var error, retReq
+
 async function ConnectToContract(campaignAddress) {
     window.ethereum.enable()
     provider = new ethers.providers.Web3Provider(window.ethereum)
     if (!provider) {
-        return { status: 400 }
+        return { status: 400, msg: "Provider/MetaMask was not recoganized" }
     }
     signer = provider.getSigner()
 
@@ -43,23 +45,30 @@ const ContributeUtil = async (campaignAddress, ethValueFromContributer) => {
 
 const WithdrawUtil = async (campaignAddress, requestId) => {
     ConnectToContract(campaignAddress)
-    let FundWithdrawedEvent
+    let FundWithdrawedEvent, txReciept
 
-    let txResponse = await connectedContract.withdraw(requestId)
-    const txReciept = await txResponse.wait(2)
+    try {
+        const txResponse = await connectedContract.withdraw(requestId)
+        txReciept = await txResponse.wait(2)
 
-    contract.on("FundWithdrawed", (amount) => {
-        FundWithdrawedEvent = {
-            transferedAmount: amount,
-        }
-    })
+        contract.on("FundWithdrawed", (amount) => {
+            FundWithdrawedEvent = {
+                transferedAmount: amount,
+            }
+        })
+    } catch (e) {
+        error = e
+    }
 
     console.log(`FundWithdrawed ${FundWithdrawedEvent}`)
 
-    return {
-        status: txReciept.status,
-        transferedAmount: FundWithdrawedEvent.transferedAmount,
+    if (txReciept.status == 1) {
+        retReq = { status: 200, withdrawedAmount: FundWithdrawedEvent.amount }
+    } else {
+        retReq = { statusbar: 400, msg: error }
     }
+
+    return retReq
 }
 
 const MakeRequestUtil = async (
@@ -68,31 +77,61 @@ const MakeRequestUtil = async (
     withdrawAmount
 ) => {
     ConnectToContract(campaignAddress)
-    let durationOfRequest = Math.ceil(durationOfRequestInHours * 60)
-    let txResponse = await connectedContract.makeRequest(
-        durationOfRequest,
-        withdrawAmount
-    )
 
-    const txReciept = await txResponse.wait(2)
+    let durationOfRequest = Math.ceil(durationOfRequestInHours * 60),
+        txReciept,
+        RequestApplied
 
-    return {
-        status: txReciept.status == 1 ? 200 : 400,
+    try {
+        let txResponse = await connectedContract.makeRequest(
+            durationOfRequest,
+            withdrawAmount
+        )
+
+        contract.on("RequestApplied", (requestIndex) => {
+            RequestApplied = {
+                requestId: requestIndex,
+            }
+        })
+
+        txReciept = await txResponse.wait(2)
+    } catch (e) {
+        error = e
     }
+
+    if (txReciept.status == 1) {
+        retReq = { status: 200, requestId: RequestApplied.requestId }
+    } else {
+        retReq = { status: 400, msg: error }
+    }
+
+    return retReq
 }
 
 const StakeInRequestUtil = async (campaignAddress, requestId, voteValue) => {
     ConnectToContract(campaignAddress)
-    let txResponse
-    if (voteValue === 1) {
-        txResponse = await connectedContract.stakeInRequest(requestId, 0)
-    } else {
-        txResponse = await connectedContract.stakeInRequest(requestId, 1)
+
+    let txResponse, txReciept
+
+    try {
+        if (voteValue === 1) {
+            txResponse = await connectedContract.stakeInRequest(requestId, 0)
+        } else {
+            txResponse = await connectedContract.stakeInRequest(requestId, 1)
+        }
+
+        txReciept = await txResponse.wait(2)
+        console.log(`transaction recipet ${txReciept}`)
+    } catch (e) {
+        error = e
     }
 
-    const txReciept = await txResponse.wait(2)
-
-    return { status: txReciept.status == 1 ? 200 : 400 }
+    if (txReciept.status == 1) {
+        retReq = { status: 200 }
+    } else {
+        retReq = { status: 400, msg: error }
+    }
+    return retReq
 }
 
 const GetRequestInfoUtil = async (campaignAddress, requestId) => {
