@@ -99,11 +99,6 @@ const GetRequestInfoUtil = async (campaignAddress, requestId) => {
     ConnectToContract(campaignAddress)
 
     const requestInfo = await connectedContract.getRequestInfo(requestId)
-    // s_requests[requestId].requestedAmount,
-    // s_requests[requestId].requestedTime,
-    // s_requests[requestId].durationOfRequest,
-    // uint256(s_requests[requestId].currentStatus),
-    // s_requests[requestId].amountRecieved
 
     console.log(`Request Info ${requestInfo}, Data type is ${typeof requestId}`)
     return { requestInfo }
