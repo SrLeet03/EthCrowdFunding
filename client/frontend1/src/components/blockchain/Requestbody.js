@@ -1,4 +1,5 @@
 import React  , {useState  , useEffect}from 'react'
+import { useSelector } from 'react-redux'
 
 import './css/profile.css'
 
@@ -30,6 +31,9 @@ export default function FundProfile({ info }) {
         "status":"processing",
     }]) ; 
     
+    const profile = useSelector((state) => state.fundr.fundr)
+    console.log("profile from request , " , profile);
+
     useEffect(() => {
 
         getAllRequestsForCampaign().then((res)=>{
@@ -50,12 +54,17 @@ export default function FundProfile({ info }) {
     }
 
     const handleSubmit =async () =>{
-       const res = await createRequestsForCampaign(req.cid , req.rid , req.info,req.amount) ;
+       const contract_result = await createRequestsForCampaign( profile.addr , req.amount ,2 ) ;
+       if(contract_result.status !==200){
+           alert("Failed to create Request, ",contract_result.msg) ;
+           return;
+       }
+       const res = await createRequestsForCampaign(profile.addr , contract_result.msg , req.info,req.amount) ;
+
        if(res.status === 200){
           alert("request added") ;
           return ;
        }
-       
        alert("falied to add request!");
 
     }

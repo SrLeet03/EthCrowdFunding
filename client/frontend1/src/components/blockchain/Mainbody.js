@@ -9,7 +9,7 @@ export default function FundProfile({ info }) {
     
     const profile = useSelector((state) => state.fundr.fundr)
 
-   console.log(profile);
+   console.log('profile' , profile);
 
     return (
         <div>

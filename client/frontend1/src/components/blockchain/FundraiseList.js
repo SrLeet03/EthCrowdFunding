@@ -105,7 +105,8 @@ export default function FundraiseList() {
                                 tag  :value.category,
                                 amount:value.donation_target,
                                 days : value.days,
-                                tagline: value.description
+                                tagline: value.description,
+                                addr : value.public_key
                             }
                              return <FundCard info={prop} />;
                             // return <Parent/>
