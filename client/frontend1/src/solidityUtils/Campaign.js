@@ -7,7 +7,6 @@ async function ConnectToContract(campaignAddress) {
     window.ethereum.enable()
     provider = new ethers.providers.Web3Provider(window.ethereum)
     if (!provider) {
-        // not provider found
         return { status: 400 }
     }
     signer = provider.getSigner()
@@ -42,11 +41,12 @@ const ContributeUtil = async (campaignAddress, ethValueFromContributer) => {
     }
 }
 
-const WithdrawUtil = async (requestId) => {
+const WithdrawUtil = async (campaignAddress, requestId) => {
+    ConnectToContract(campaignAddress)
     let FundWithdrawedEvent
 
     let txResponse = await connectedContract.withdraw(requestId)
-    const txReciept = await txResponse.wait(6)
+    const txReciept = await txResponse.wait(2)
 
     contract.on("FundWithdrawed", (amount) => {
         FundWithdrawedEvent = {
@@ -62,8 +62,36 @@ const WithdrawUtil = async (requestId) => {
     }
 }
 
-const MakeRequestUtil = async (durationOfRequest, withdrawAmount) => {}
+const MakeRequestUtil = async (
+    campaignAddress,
+    durationOfRequest,
+    withdrawAmount
+) => {
+    ConnectToContract(campaignAddress)
+    let txResponse = await connectedContract.makeRequest(
+        durationOfRequest,
+        withdrawAmount
+    )
 
-const StakeInRequestUtil = async (requestId, voteValue) => {}
+    const txReciept = await txResponse.wait(2)
+
+    return {
+        status: txReciept.status == 1 ? 200 : 400,
+    }
+}
+
+const StakeInRequestUtil = async (campaignAddress, requestId, voteValue) => {
+    ConnectToContract(campaignAddress)
+    let txResponse
+    if (voteValue === 1) {
+        txResponse = await connectedContract.stakeInRequest(requestId, 0)
+    } else {
+        txResponse = await connectedContract.stakeInRequest(requestId, 1)
+    }
+
+    const txReciept = await txResponse.wait(2)
+
+    return { status: txReciept.status == 1 ? 200 : 400 }
+}
 
 export { ContributeUtil, WithdrawUtil, MakeRequestUtil, StakeInRequestUtil }

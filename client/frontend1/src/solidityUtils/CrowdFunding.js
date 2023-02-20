@@ -67,7 +67,7 @@ async function CreateCampaignUtil(campaignGoal, address, minContribution = 1) {
     // console.log("---------------------")
 
     return {
-        status: txReciept.status,
+        status: txReciept.status == 1 ? 200 : 400,
         address: camapignCreatedEvent.campaignAddress,
     }
 }
