@@ -33,6 +33,7 @@ const ContributeUtil = async (campaignAddress, ethValueFromContributer) => {
         console.log(FundTransferedEvent)
     })
 
+    
     const txReciept = await txResponse.wait(2)
 
     console.log(`transection Recipt ${txReciept}`)

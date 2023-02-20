@@ -18,6 +18,13 @@ export default function FundProfile({ info }) {
     
     const url = String(window.location.href) ;
 
+    const handleSubmitContribute = () =>{
+      
+    }
+    const handleSubmitDonate = () =>{
+        
+    }
+
     return (
         
 
@@ -59,6 +66,14 @@ export default function FundProfile({ info }) {
                             <i className="fa fa-facebook"></i>
                             Share on Facebook
                         </a>
+                        {/* <Button variant='danger' onClick={handleSubmitContribute}>
+                            Contribute
+                        </Button> */}
+                        <br/><br/>
+                        <Button variant='info' onClick={handleSubmitDonate}>
+                            Donate
+                        </Button>
+
                     </div>
                 
                {
