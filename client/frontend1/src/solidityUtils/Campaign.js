@@ -9,7 +9,7 @@ async function ConnectToContract(campaignAddress) {
     window.ethereum.enable()
     provider = new ethers.providers.Web3Provider(window.ethereum)
     if (!provider) {
-        return { status: 400, msg: "Provider/MetaMask was not recoganized" }
+        //return { status: 400, msg: "Provider/MetaMask was not recoganized" }
     }
     signer = provider.getSigner()
 
@@ -33,7 +33,6 @@ const ContributeUtil = async (campaignAddress, ethValueFromContributer) => {
         console.log(FundTransferedEvent)
     })
 
-    
     const txReciept = await txResponse.wait(2)
 
     console.log(`transection Recipt ${txReciept}`)
@@ -74,10 +73,12 @@ const WithdrawUtil = async (campaignAddress, requestId) => {
 
 const MakeRequestUtil = async (
     campaignAddress,
-    durationOfRequestInHours,
-    withdrawAmount
+    withdrawAmount,
+    durationOfRequestInHours
 ) => {
     ConnectToContract(campaignAddress)
+
+    console.log(`contract address ${campaignAddress}`)
 
     let durationOfRequest = Math.ceil(durationOfRequestInHours * 60),
         txReciept,
@@ -89,20 +90,26 @@ const MakeRequestUtil = async (
             withdrawAmount
         )
 
-        contract.on("RequestApplied", (requestIndex) => {
-            RequestApplied = {
-                requestId: requestIndex,
-            }
+        await contract.on("RequestApplied", (requestIndex) => {
+            RequestApplied = requestIndex.toNumber()
+
+            console.log(RequestApplied)
         })
 
         txReciept = await txResponse.wait(2)
+        console.log("----------------")
+        console.log(txResponse)
+        console.log("----------------")
+        console.log(txReciept)
     } catch (e) {
         error = e
     }
 
-    if (txReciept.status == 1) {
-        retReq = { status: 200, requestId: RequestApplied.requestId }
+    if (txReciept) {
+        console.log("passing Request applied")
+        retReq = { status: 200, requestId: RequestApplied }
     } else {
+        console.log("Request declinded")
         retReq = { status: 400, msg: error }
     }
 

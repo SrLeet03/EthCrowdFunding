@@ -1,5 +1,5 @@
-import React  , {useState  , useEffect}from 'react'
-import { useSelector } from 'react-redux'
+import React, { useState, useEffect } from "react"
+import { useSelector } from "react-redux"
 
 import "./css/profile.css"
 
@@ -9,6 +9,8 @@ import {
     getAllRequestsForCampaign,
     createRequestsForCampaign,
 } from "../../hooks/campaign.js"
+
+import { MakeRequestUtil } from "../../solidityUtils/Campaign"
 
 export default function FundProfile({ info }) {
     const [req, setReq] = useState({
@@ -35,9 +37,8 @@ export default function FundProfile({ info }) {
         },
     ])
 
-    
     const profile = useSelector((state) => state.fundr.fundr)
-    console.log("profile from request , " , profile);
+    console.log("profile from request , ", profile)
 
     useEffect(() => {
         getAllRequestsForCampaign()
@@ -59,19 +60,29 @@ export default function FundProfile({ info }) {
         }))
     }
 
-    const handleSubmit =async () =>{
-       const contract_result = await createRequestsForCampaign( profile.addr , req.amount ,2 ) ;
-       if(contract_result.status !==200){
-           alert("Failed to create Request, ",contract_result.msg) ;
-           return;
-       }
-       const res = await createRequestsForCampaign(profile.addr , contract_result.msg , req.info,req.amount) ;
+    const handleSubmit = async () => {
+        const contract_result = await MakeRequestUtil(
+            profile.addr,
+            req.amount,
+            2
+        )
+        console.log(`contract_result ${contract_result}`)
+        if (contract_result.status !== 200) {
+            alert("Failed to create Request, ", contract_result.msg)
+            return
+        }
+        const res = await createRequestsForCampaign(
+            profile.addr,
+            contract_result.msg,
+            req.info,
+            req.amount
+        )
 
-       if(res.status === 200){
-          alert("request added") ;
-          return ;
-       }
-       alert("falied to add request!");
+        if (res.status === 200) {
+            alert("request added")
+            return
+        }
+        alert("falied to add request!")
     }
 
     return (

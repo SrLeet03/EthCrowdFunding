@@ -106,7 +106,7 @@ contract Campaign is Stake {
     function makeRequest(
         uint256 _durationOfRequest,
         uint256 _withdrawAmount
-    ) public onlyOwner {
+    ) public onlyOwner returns (uint256) {
         // Stake happens here
 
         Request storage request = s_requests.push();
@@ -119,6 +119,8 @@ contract Campaign is Stake {
         request.campaignAddress = address(this);
         request.currentStatus = CampaignLib.permission.PROCESSING;
         emit RequestApplied(s_requests.length - 1);
+
+        return (s_requests.length - 1);
     }
 
     function stakeInRequest(uint256 requestId, CampaignLib.vote myVote) public {
