@@ -28,7 +28,7 @@ const ContributeUtil = async (campaignAddress, ethValueFromContributer) => {
             contributerAddress: contributerAddress,
             fundedAmount: fundedAmount,
         }
-        console.log(JSON.stringify(FundTransferedEvent, null, 4))
+        console.log(FundTransferedEvent)
     })
 
     const txReciept = await txResponse.wait(2)
@@ -64,10 +64,11 @@ const WithdrawUtil = async (campaignAddress, requestId) => {
 
 const MakeRequestUtil = async (
     campaignAddress,
-    durationOfRequest,
+    durationOfRequestInHours,
     withdrawAmount
 ) => {
     ConnectToContract(campaignAddress)
+    let durationOfRequest = Math.ceil(durationOfRequestInHours * 60)
     let txResponse = await connectedContract.makeRequest(
         durationOfRequest,
         withdrawAmount
@@ -94,4 +95,34 @@ const StakeInRequestUtil = async (campaignAddress, requestId, voteValue) => {
     return { status: txReciept.status == 1 ? 200 : 400 }
 }
 
-export { ContributeUtil, WithdrawUtil, MakeRequestUtil, StakeInRequestUtil }
+const GetRequestInfoUtil = async (campaignAddress, requestId) => {
+    ConnectToContract(campaignAddress)
+
+    const requestInfo = await connectedContract.getRequestInfo(requestId)
+    // s_requests[requestId].requestedAmount,
+    // s_requests[requestId].requestedTime,
+    // s_requests[requestId].durationOfRequest,
+    // uint256(s_requests[requestId].currentStatus),
+    // s_requests[requestId].amountRecieved
+
+    console.log(`Request Info ${requestInfo}, Data type is ${typeof requestId}`)
+    return { requestInfo }
+}
+
+const GetRequestStatusUtil = async (campaignAddress, requestId) => {
+    ConnectToContract(campaignAddress)
+
+    const requestStatus = await connectedContract.getRequestStatus()
+
+    console.log(`request status ${requestStatus}`)
+    return requestStatus._hex
+}
+
+export {
+    ContributeUtil,
+    WithdrawUtil,
+    MakeRequestUtil,
+    StakeInRequestUtil,
+    GetRequestInfoUtil,
+    GetRequestStatusUtil,
+}
