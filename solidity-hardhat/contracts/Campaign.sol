@@ -191,4 +191,22 @@ contract Campaign is Stake {
         }
         return (amount * bps) / totalAmount;
     }
+
+    function getRequestStatus(uint256 requestId) public view returns (uint32) {
+        return uint32(s_requests[requestId].currentStatus);
+    }
+
+    bool amountRecieved;
+
+    function getRequestInfo(
+        uint256 requestId
+    ) public view returns (uint256, uint256, uint256, uint256, bool) {
+        return (
+            s_requests[requestId].requestedAmount,
+            s_requests[requestId].requestedTime,
+            s_requests[requestId].durationOfRequest,
+            uint256(s_requests[requestId].currentStatus),
+            s_requests[requestId].amountRecieved
+        );
+    }
 }

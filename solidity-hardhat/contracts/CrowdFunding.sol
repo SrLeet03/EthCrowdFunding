@@ -29,7 +29,7 @@ contract CrowdFunding {
 
         emit CampaignCreated(
             msg.sender,
-            s_campaigns[msg.sender].length,
+            s_campaigns[msg.sender].length - 1,
             address(campaign)
         );
     }
