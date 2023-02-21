@@ -66,14 +66,14 @@ export default function FundProfile({ info }) {
             req.amount,
             2
         )
-        console.log(`contract_result ${contract_result}`)
+        console.log("contract_result to create request ", contract_result)
         if (contract_result.status !== 200) {
             alert("Failed to create Request, ", contract_result.msg)
             return
         }
         const res = await createRequestsForCampaign(
             profile.addr,
-            contract_result.msg,
+            contract_result.requestId,
             req.info,
             req.amount
         )

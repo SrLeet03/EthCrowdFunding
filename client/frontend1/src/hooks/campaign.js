@@ -1,144 +1,132 @@
-import {URL} from "../helper/helper.js"
-import axios from 'axios';
+import { URL } from "../helper/helper.js"
+import axios from "axios"
 
-async function createCampaign(payload){
-    try{
+async function createCampaign(payload) {
+    try {
         const result = await axios.post(`${URL}/createCampaign/`, {
             name: payload.title,
             description: payload.desc,
             donation_target: payload.amount,
-            public_key: payload.addr ,
-            category:payload.category, 
+            public_key: payload.addr,
+            category: payload.category,
             // profile: null,
             date_expired: payload.date,
             status: "onGoing",
         })
-        console.log(result);
-        return result;
-    }
-    catch(err){
-        console.log(err);
-        return err;
+        console.log(result)
+        return result
+    } catch (err) {
+        console.log(err)
+        return err
     }
 }
 
-async function getAllCampaign(){
-    try{
+async function getAllCampaign() {
+    try {
         const result = await axios.get(`${URL}/getAllCampaigns/`)
-        console.log(result);
-        return result;
-    }
-    catch(err){
-        console.log(err);
-        return err;
+        console.log(result)
+        return result
+    } catch (err) {
+        console.log(err)
+        return err
     }
 }
 
-async function getAllRequestsForCampaign(cid){
-    try{
-        const result = await axios.post(`${URL}/request/getAllRequestBycid/`, {
-            cid: cid
+async function getAllRequestsForCampaign(cid) {
+    try {
+        const result = await axios.post(`${URL}request/getAllRequestBycid/`, {
+            cid: cid,
         })
-        console.log(result);
-        return result;
-    }
-    catch(err){
-        console.log(err);
-        return err;
+        console.log(result)
+        return result
+    } catch (err) {
+        console.log(err)
+        return err
     }
 }
 
-async function createRequestsForCampaign(cid , rid , info , amt){
-    try{
+async function createRequestsForCampaign(cid, rid, info, amt) {
+    try {
         const result = await axios.post(`${URL}/request/createRequest/`, {
             cid: cid,
-            rid : cid, 
-            info : info , 
-            amount : amt
+            rid: cid,
+            info: info,
+            amount: amt,
         })
-        console.log(result);
-        return result;
-    }
-    catch(err){
-        console.log(err);
-        return err;
+        console.log(result)
+        return result
+    } catch (err) {
+        console.log(err)
+        return err
     }
 }
 
-async function getCampaignById(payload){
-    try{
-        const result = await axios.get(`${URL}/getCampaignById/`,
-        {
-            params:{
-                id:payload.id
-            }
+async function getCampaignById(payload) {
+    try {
+        const result = await axios.get(`${URL}/getCampaignById/`, {
+            params: {
+                id: payload.id,
+            },
         })
-        console.log(result);
-        return result;
-    }
-    catch(err){
-        console.log(err);
-        return err;
+        console.log(result)
+        return result
+    } catch (err) {
+        console.log(err)
+        return err
     }
 }
-async function getCampaignByCategory(payload){
-    try{
-        const result = await axios.get(`${URL}/getCampaignByCategory/`,
-        {
-            params:{
-                category:payload.category
-            }
+async function getCampaignByCategory(payload) {
+    try {
+        const result = await axios.get(`${URL}/getCampaignByCategory/`, {
+            params: {
+                category: payload.category,
+            },
         })
-        console.log(result);
-        return result;
-    }
-    catch(err){
-        console.log(err);
-        return err;
+        console.log(result)
+        return result
+    } catch (err) {
+        console.log(err)
+        return err
     }
 }
-async function getCampaignByStatus(payload){
-    try{
-        const result = await axios.get(`${URL}/getCampaignByStatus/`,
-        {
-            params:{
-                status:payload.status
-            }
+async function getCampaignByStatus(payload) {
+    try {
+        const result = await axios.get(`${URL}/getCampaignByStatus/`, {
+            params: {
+                status: payload.status,
+            },
         })
-        console.log(result);
-        return result;
-    }
-    catch(err){
-        console.log(err);
-        return err;
+        console.log(result)
+        return result
+    } catch (err) {
+        console.log(err)
+        return err
     }
 }
-async function updateStatusById(payload){
-    try{
-        const result = await axios.post(`${URL}/updateStatusById/`,{
+async function updateStatusById(payload) {
+    try {
+        const result = await axios.post(`${URL}/updateStatusById/`, {
             id: payload.id,
-            updated_status: payload.updated_status
+            updated_status: payload.updated_status,
         })
-        console.log(result);
-        return result;
-    }
-    catch(err){
-        console.log(err);
-        return err;
+        console.log(result)
+        return result
+    } catch (err) {
+        console.log(err)
+        return err
     }
 }
-async function updateTargetById(payload){
-    try{
-        const result = await axios.post(`${URL}/updateTargetById/`,{
+async function updateTargetById(payload) {
+    try {
+        const result = await axios.post(`${URL}/updateTargetById/`, {
             id: payload.id,
-            deduct: payload.deduct
+            deduct: payload.deduct,
         })
-        console.log(result);
-        return result;
-    }
-    catch(err){
-        console.log(err);
-        return err;
+        console.log(result)
+        return result
+    } catch (err) {
+        console.log(err)
+        return err
     }
 }
 
@@ -147,7 +135,7 @@ async function updateTargetById(payload){
 //     description: 'test1',
 //     donation_target: '1000',
 //     public_key: '$013',
-//     category:'education', 
+//     category:'education',
 //     profile: '',
 //     date_expired: '',
 //     status: 'pending',
@@ -160,14 +148,11 @@ async function updateTargetById(payload){
 //createCampaign(payload);
 // updateTargetById(payload);
 
-export {createCampaign ,createRequestsForCampaign};
-export {getAllRequestsForCampaign} ;
-export {getAllCampaign};
-export {getCampaignById};
-export {getCampaignByCategory};
-export {getCampaignByStatus};
-export {updateStatusById};
-export {updateTargetById};
-
-
-
+export { createCampaign, createRequestsForCampaign }
+export { getAllRequestsForCampaign }
+export { getAllCampaign }
+export { getCampaignById }
+export { getCampaignByCategory }
+export { getCampaignByStatus }
+export { updateStatusById }
+export { updateTargetById }

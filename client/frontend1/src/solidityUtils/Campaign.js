@@ -20,27 +20,38 @@ async function ConnectToContract(campaignAddress) {
 const ContributeUtil = async (campaignAddress, ethValueFromContributer) => {
     ConnectToContract(campaignAddress)
 
-    let FundTransferedEvent
+    let FundTransferedEvent, txReciept
 
-    let txResponse = await connectedContract.contribute({
-        value: ethers.utils.parseEther(ethValueFromContributer),
-    })
-    contract.on("FundTransfered", (contributerAddress, fundedAmount) => {
-        FundTransferedEvent = {
-            contributerAddress: contributerAddress,
-            fundedAmount: fundedAmount,
-        }
-        console.log(FundTransferedEvent)
-    })
+    try {
+        await contract.on(
+            "FundTransfered",
+            (contributerAddress, fundedAmount) => {
+                FundTransferedEvent = {
+                    contributerAddress: contributerAddress,
+                    fundedAmount: fundedAmount,
+                }
+                console.log(FundTransferedEvent)
+            }
+        )
+        const txResponse = await connectedContract.contribute({
+            value: ethers.utils.parseEther(ethValueFromContributer),
+        })
 
-    const txReciept = await txResponse.wait(2)
-
-    console.log(`transection Recipt ${txReciept}`)
-
-    return {
-        status: txReciept.status,
-        fundedAmount: FundTransferedEvent.fundedAmount,
+        txReciept = await txResponse.wait(2)
+        console.log("transection Recipt -------------", txReciept)
+    } catch (e) {
+        error = e
     }
+    if (txReciept.status == 1) {
+        retReq = {
+            status: 200,
+            donatedAmount: FundTransferedEvent.fundedAmount,
+        }
+    } else {
+        retReq = { status: 400, msg: error }
+    }
+
+    return retReq
 }
 
 const WithdrawUtil = async (campaignAddress, requestId) => {
@@ -48,14 +59,13 @@ const WithdrawUtil = async (campaignAddress, requestId) => {
     let FundWithdrawedEvent, txReciept
 
     try {
-        const txResponse = await connectedContract.withdraw(requestId)
-        txReciept = await txResponse.wait(2)
-
-        contract.on("FundWithdrawed", (amount) => {
+        await contract.on("FundWithdrawed", (amount) => {
             FundWithdrawedEvent = {
                 transferedAmount: amount,
             }
         })
+        const txResponse = await connectedContract.withdraw(requestId)
+        txReciept = await txResponse.wait(2)
     } catch (e) {
         error = e
     }
@@ -85,16 +95,15 @@ const MakeRequestUtil = async (
         RequestApplied
 
     try {
-        let txResponse = await connectedContract.makeRequest(
-            durationOfRequest,
-            withdrawAmount
-        )
-
         await contract.on("RequestApplied", (requestIndex) => {
             RequestApplied = requestIndex.toNumber()
 
             console.log(RequestApplied)
         })
+        let txResponse = await connectedContract.makeRequest(
+            durationOfRequest,
+            withdrawAmount
+        )
 
         txReciept = await txResponse.wait(2)
         console.log("----------------")
@@ -105,11 +114,11 @@ const MakeRequestUtil = async (
         error = e
     }
 
-    if (txReciept) {
+    if (txReciept.status == 1) {
         console.log("passing Request applied")
         retReq = { status: 200, requestId: RequestApplied }
     } else {
-        console.log("Request declinded")
+        console.log("Request declinded", error)
         retReq = { status: 400, msg: error }
     }
 
@@ -123,13 +132,17 @@ const StakeInRequestUtil = async (campaignAddress, requestId, voteValue) => {
 
     try {
         if (voteValue === 1) {
+            // Accpeterd vote
             txResponse = await connectedContract.stakeInRequest(requestId, 0)
         } else {
             txResponse = await connectedContract.stakeInRequest(requestId, 1)
         }
 
         txReciept = await txResponse.wait(2)
-        console.log(`transaction recipet ${txReciept}`)
+        console.log("----------------")
+        console.log(txResponse)
+        console.log("----------------")
+        console.log(txReciept)
     } catch (e) {
         error = e
     }

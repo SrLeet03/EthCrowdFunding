@@ -81,7 +81,7 @@ async function CreateCampaignUtil(campaignGoal, address, minContribution = 1) {
         console.log(camapignCreatedEvent)
         retReq = {
             status: 200,
-            campaignId: camapignCreatedEvent.campaignId,
+            address: camapignCreatedEvent.campaignAddress,
         }
         console.log(retReq)
     } else {
