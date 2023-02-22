@@ -18,6 +18,7 @@ export default function FundProfile({ info }) {
         cid: null,
         info: null,
         amount: null,
+        duration: null,
     })
 
     const [requests, setRequests] = useState([
@@ -64,7 +65,7 @@ export default function FundProfile({ info }) {
         const contract_result = await MakeRequestUtil(
             profile.addr,
             req.amount,
-            2
+            req.duration
         )
         console.log("contract_result to create request ", contract_result)
         if (contract_result.status !== 200) {
@@ -73,7 +74,7 @@ export default function FundProfile({ info }) {
         }
         const res = await createRequestsForCampaign(
             profile.addr,
-            contract_result.requestId,
+            contract_result.msg,
             req.info,
             req.amount
         )
@@ -106,6 +107,8 @@ export default function FundProfile({ info }) {
                 type="number"
                 placeholder="Enter amount"
             />
+
+            <p>deadline of the request is of 30 min</p>
 
             <button onClick={handleSubmit}>Create Request</button>
             <br />

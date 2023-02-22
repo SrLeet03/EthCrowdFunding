@@ -70,25 +70,19 @@ const ContributeUtil = async (campaignAddress, ethValueFromContributer) => {
 }
 
 const WithdrawUtil = async (campaignAddress, requestId) => {
-    ConnectToContract(campaignAddress)
-    let FundWithdrawedEvent, txReciept
+    let txReciept
 
     try {
-        await contract.on("FundWithdrawed", (amount) => {
-            FundWithdrawedEvent = {
-                transferedAmount: amount,
-            }
-        })
+        await ConnectToContract(campaignAddress)
         const txResponse = await connectedContract.withdraw(requestId)
         txReciept = await txResponse.wait(BlockWaitTime)
     } catch (e) {
         error = e
+        console.log(error)
     }
 
-    console.log(`FundWithdrawed ${FundWithdrawedEvent}`)
-
     if (txReciept.status == 1) {
-        retReq = { status: 200, withdrawedAmount: FundWithdrawedEvent.amount }
+        retReq = { status: 200 }
     } else {
         retReq = { statusbar: 400, msg: error }
     }
@@ -101,20 +95,21 @@ const MakeRequestUtil = async (
     withdrawAmount,
     durationOfRequestInHours
 ) => {
-    ConnectToContract(campaignAddress)
+    await ConnectToContract(campaignAddress)
 
-    console.log("contract address ", campaignAddress)
+    console.log("time received ", durationOfRequestInHours)
 
-    let durationOfRequest = Math.ceil(durationOfRequestInHours * 60),
-        txReciept,
-        RequestApplied
+    let durationOfRequest = await Math.ceil(durationOfRequestInHours * 60),
+        txReciept
+    durationOfRequest = 1800
+    console.log(
+        "contract address & duration ",
+        campaignAddress,
+        " & ",
+        durationOfRequest
+    )
 
     try {
-        // await contract.on("RequestApplied", (requestIndex) => {
-        //     RequestApplied = requestIndex.toNumber()
-
-        //     console.log(RequestApplied)
-        // })
         let txResponse = await connectedContract.makeRequest(
             durationOfRequest,
             withdrawAmount
@@ -151,9 +146,9 @@ const StakeInRequestUtil = async (campaignAddress, requestId, voteValue) => {
         await ConnectToContract(campaignAddress, voteValue)
         if (voteValue === 1) {
             // Accpeterd vote
-            txResponse = await connectedContract.stakeInRequest(requestId, 0)
-        } else {
             txResponse = await connectedContract.stakeInRequest(requestId, 1)
+        } else {
+            txResponse = await connectedContract.stakeInRequest(requestId, 0)
         }
 
         txReciept = await txResponse.wait(BlockWaitTime)
@@ -202,7 +197,7 @@ const GetMinimumContrbutionLimitUtil = async (campaignAddress) => {
         const minContributionLimit = await contract.getMinContributionLimit()
         console.log("minimum contribution ", minContributionLimit)
 
-        return { status: 200, msg: minContributionLimit }
+        return { status: 200, msg: minContributionLimit.toNumber() }
     } catch (e) {
         console.log(e)
         return { status: 400, msg: error }

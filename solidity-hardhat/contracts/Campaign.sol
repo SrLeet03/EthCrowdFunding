@@ -14,7 +14,7 @@ error Campaign__RequestIsUnderProcess();
 error Campaign__RequestRejected();
 error Campaign__ContributionTransactionFailed();
 error Campaign__WithdrawTransactionFailed();
-error Campaign__NoEnoughAmount();
+error Campaign__NotEnoughFundToVote();
 error Campaign__NotAContributer();
 
 contract Campaign is Stake {
@@ -30,7 +30,12 @@ contract Campaign is Stake {
     event OwnershipTransfered(address from, address to);
     event FundTransfered(address from, uint256 fundedAmount);
     event RequestApplied(uint256 requestIndex);
-    event RequestResult(uint256 requestIndex, bool approved);
+    event RequestResult(
+        uint256 requestIndex,
+        bool approved,
+        uint256 acceptedWeightage,
+        uint256 rejectedWeightage
+    );
 
     constructor(uint256 campaignGoal, uint256 minContribution) {
         i_campaignGoal = campaignGoal;
@@ -137,7 +142,9 @@ contract Campaign is Stake {
         emit RequestResult(
             requestIndex,
             getPermissionStatus(s_requests[requestIndex]) ==
-                CampaignLib.permission.ACCEPTED
+                CampaignLib.permission.ACCEPTED,
+            s_requests[requestIndex].totalAcceptVote,
+            s_requests[requestIndex].totalRejectVote
         );
     }
 
@@ -190,7 +197,7 @@ contract Campaign is Stake {
         uint256 totalAmount
     ) internal pure returns (uint256) {
         if (amount * bps < totalAmount) {
-            revert Campaign__NoEnoughAmount();
+            revert Campaign__NotEnoughFundToVote();
         }
         return (amount * bps) / totalAmount;
     }
@@ -221,5 +228,11 @@ contract Campaign is Stake {
 
     function getMinContributionLimit() public view returns (uint256) {
         return i_minContribution;
+    }
+
+    function getTimeLeftForRequest(
+        uint256 requestId
+    ) public view returns (uint256) {
+        return timeLeft(s_requests[requestId]);
     }
 }

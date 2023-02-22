@@ -50,7 +50,7 @@ async function createRequestsForCampaign(cid, rid, info, amt) {
     try {
         const result = await axios.post(`${URL}/request/createRequest/`, {
             cid: cid,
-            rid: cid,
+            rid: rid,
             info: info,
             amount: amt,
         })

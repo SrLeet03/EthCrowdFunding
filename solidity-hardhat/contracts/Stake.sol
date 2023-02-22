@@ -12,7 +12,7 @@ import "./CampaignLib.sol";
 // Send the result and withdraw if needed
 //
 
-error Stake__DeadlineNotReached();
+error Stake__DeadlineNotReached(uint256 remainingTime);
 error Stake__DeadLineReached();
 error Stake__ContributerAlreadyVoted();
 
@@ -35,7 +35,7 @@ contract Stake {
         uint256 timeRemaining = timeLeft(request);
         if (requireReached) {
             if (timeRemaining > 0) {
-                revert Stake__DeadlineNotReached();
+                revert Stake__DeadlineNotReached(timeRemaining);
             }
             // require(timeRemaining == 0, "Deadline has not reached");
         } else {
@@ -71,7 +71,7 @@ contract Stake {
     function result(
         Request storage request
     ) internal deadlineReached(request, true) {
-        if (request.totalAcceptVote > request.totalRejectVote) {
+        if (request.totalAcceptVote >= request.totalRejectVote) {
             request.currentStatus = CampaignLib.permission.ACCEPTED;
         } else {
             request.currentStatus = CampaignLib.permission.REJECTED;
