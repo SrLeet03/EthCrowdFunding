@@ -22,11 +22,11 @@ export default function FundProfile({ info }) {
 
     const [requests, setRequests] = useState([
         {
-            description: "This is the sample request",
+            info: "This is the sample request",
             amount: 12,
             requestId: "sdlfhbv989841@!3e",
-            deadline: "25feb,2019",
-            status: "accepted",
+            date: "25feb,2019",
+            id: "accepted",
         },
         {
             description: "This is the another request",
@@ -41,7 +41,7 @@ export default function FundProfile({ info }) {
     console.log("profile from request , ", profile)
 
     useEffect(() => {
-        getAllRequestsForCampaign()
+        getAllRequestsForCampaign(profile.addr)
             .then((res) => {
                 if (res.data !== undefined && res.data.length !== 0) {
                     setRequests(res.data)

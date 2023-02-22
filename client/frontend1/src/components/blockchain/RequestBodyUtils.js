@@ -34,11 +34,11 @@ export default function RequestBodyUtils({ data }) {
     return (
         <div>
             <Alert style={{ width: "35rem" }} key="info" variant="info">
-                Status : {data["status"]}
+                Id : {data["id"]}
                 <>
                     <br />
                 </>
-                {data["description"]}
+                Info : {data["info"]}
                 <>
                     <br />
                     <br />
@@ -47,7 +47,7 @@ export default function RequestBodyUtils({ data }) {
                 <>
                     <br />
                 </>
-                Deadline : {data["deadline"]}
+                Deadline : {data["date"]}
                 <>
                     <br />
                 </>

@@ -69,16 +69,15 @@ contract Campaign is Stake {
         _;
     }
 
-    function contribute() public payable {
-        if (msg.value < i_minContribution) {
-            revert Campaign__SendMinFund(msg.value, i_minContribution);
-        }
-        (bool sent, ) = address(this).call{value: msg.value}("");
+    modifier checkMinContribute() {
+        require(
+            msg.value >= i_minContribution,
+            "Increase the contribution amount"
+        );
+        _;
+    }
 
-        if (!sent) {
-            revert Campaign__ContributionTransactionFailed();
-        }
-
+    receive() external payable checkMinContribute {
         emit FundTransfered(msg.sender, msg.value);
 
         s_contributerFund[msg.sender] += msg.value;
@@ -123,7 +122,7 @@ contract Campaign is Stake {
         return (s_requests.length - 1);
     }
 
-    function stakeInRequest(uint256 requestId, CampaignLib.vote myVote) public {
+    function stakeInRequest(uint256 requestId, bool myVote) public {
         uint256 weightage = calcualtePercent(
             s_contributerFund[msg.sender],
             10000,
@@ -218,5 +217,9 @@ contract Campaign is Stake {
             s_requests[requestId].totalRejectVote,
             s_requests[requestId].amountRecieved
         );
+    }
+
+    function getMinContributionLimit() public view returns (uint256) {
+        return i_minContribution;
     }
 }

@@ -1,4 +1,8 @@
-import { crowdFundingAddresses, crowdFundingAbi } from "../Constants/index.js"
+import {
+    crowdFundingAddresses,
+    crowdFundingAbi,
+    BlockWaitTime,
+} from "../Constants/index.js"
 import { ethers } from "ethers"
 
 let contract, connectedContract, signer, provider
@@ -14,9 +18,11 @@ async function ConnectToContract() {
     // not provider found
     //return { status: 400, msg: "Provider/'Metamask not recoganizer" }
     // }
-    signer = provider.getSigner()
-    // const { chainId } = provider.getNetwork()
-    const chainId = 5 // Mantle chain ID
+    signer = await provider.getSigner()
+    const { chainId } = await provider.getNetwork()
+
+    console.log("chain id ", chainId)
+    // chainId = 31337 // Mantle chain ID
 
     const crowdFindingAddress =
         chainId in crowdFundingAddresses
@@ -30,7 +36,69 @@ async function ConnectToContract() {
     connectedContract = await contract.connect(signer)
 }
 
-async function CreateCampaignUtil(campaignGoal, address, minContribution = 1) {
+// async function CreateCampaignUtil(campaignGoal, address, minContribution = 0) {
+//     return new Promise(async (resolve, reject) => {
+//         try {
+//             await ConnectToContract()
+
+//             let txReciept, camapignCreatedEvent
+
+//             let accounts = await provider.send("eth_requestAccounts", [])
+
+//             let account = accounts[0]
+
+//             console.log("Running----------")
+//             contract.on(
+//                 "CampaignCreated",
+//                 (ownerAddress, campaignIndex, campaignAddress) => {
+//                     camapignCreatedEvent = {
+//                         owner: ownerAddress,
+//                         campaignId: campaignIndex.toNumber(),
+//                         campaignAddress: campaignAddress,
+//                     }
+//                     resolve({
+//                         status: 200,
+//                         address: camapignCreatedEvent,
+//                     })
+//                     console.log("camapignCreatedEvent --", camapignCreatedEvent)
+//                 }
+//             )
+
+//             const txResponse = await connectedContract.createCampaign(
+//                 campaignGoal,
+//                 minContribution
+//             )
+
+//             console.log(txResponse)
+
+//             txReciept = await txResponse.wait(2)
+//             console.log(txReciept)
+
+//             console.log(camapignCreatedEvent)
+
+//             if (txReciept.status == 1) {
+//                 console.log(camapignCreatedEvent)
+//                 retReq = {
+//                     status: 200,
+//                     address: camapignCreatedEvent.campaignAddress,
+//                 }
+//                 console.log(retReq)
+//             } else {
+//                 retReq = { status: 400, msg: "txRecipet status is 0" }
+//             }
+//         } catch (e) {
+//             console.log(e)
+//             error = e
+//             return { status: 400, msg: error }
+//         }
+//     })
+// }
+
+let eventPromise = new Promise((resolve, reject) => {
+    // This promise is resolved when the "CampaignCreated" event is triggered
+})
+
+async function CreateCampaignUtil(campaignGoal, address, minContribution = 0) {
     await ConnectToContract()
 
     let txReciept, camapignCreatedEvent
@@ -68,7 +136,7 @@ async function CreateCampaignUtil(campaignGoal, address, minContribution = 1) {
 
         console.log(txResponse)
 
-        txReciept = await txResponse.wait(2)
+        txReciept = await txResponse.wait(BlockWaitTime)
 
         console.log(txReciept)
     } catch (e) {
@@ -81,7 +149,7 @@ async function CreateCampaignUtil(campaignGoal, address, minContribution = 1) {
         console.log(camapignCreatedEvent)
         retReq = {
             status: 200,
-            address: camapignCreatedEvent.campaignAddress,
+            address: txReciept.events[0].address,
         }
         console.log(retReq)
     } else {

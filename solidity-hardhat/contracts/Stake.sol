@@ -51,7 +51,7 @@ contract Stake {
 
     function stake(
         Request storage request,
-        CampaignLib.vote myVote,
+        bool myVote,
         address contributer,
         uint256 weightage
     ) internal deadlineReached(request, false) {
@@ -59,7 +59,7 @@ contract Stake {
             revert Stake__ContributerAlreadyVoted();
         }
         request.contributersVoted[contributer] = true;
-        if (myVote == CampaignLib.vote.ACCEPT) {
+        if (myVote) {
             request.totalAcceptVote += weightage;
         } else {
             request.totalRejectVote += weightage;

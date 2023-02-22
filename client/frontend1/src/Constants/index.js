@@ -6,4 +6,6 @@ import crowdFundingAddresses from "./crowdFundingAddress.json"
 import crowdFundingAbi from "./crowdFundingAbi.json"
 import campaignAbi from "./campaignAbi.json"
 
-export { crowdFundingAddresses, crowdFundingAbi, campaignAbi }
+const BlockWaitTime = 1
+
+export { crowdFundingAddresses, crowdFundingAbi, campaignAbi, BlockWaitTime }

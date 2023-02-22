@@ -1,4 +1,4 @@
-import { campaignAbi } from "../Constants/index.js"
+import { campaignAbi, BlockWaitTime } from "../Constants/index.js"
 import { ethers } from "ethers"
 
 let contract, connectedContract, signer, provider
@@ -11,47 +11,62 @@ async function ConnectToContract(campaignAddress) {
     if (!provider) {
         //return { status: 400, msg: "Provider/MetaMask was not recoganized" }
     }
-    signer = provider.getSigner()
+    signer = await provider.getSigner()
 
     contract = new ethers.Contract(campaignAddress, campaignAbi, provider)
     connectedContract = await contract.connect(signer)
+
+    console.log(signer)
 }
 
 const ContributeUtil = async (campaignAddress, ethValueFromContributer) => {
-    ConnectToContract(campaignAddress)
-
-    let FundTransferedEvent, txReciept
-
     try {
-        await contract.on(
-            "FundTransfered",
-            (contributerAddress, fundedAmount) => {
-                FundTransferedEvent = {
-                    contributerAddress: contributerAddress,
-                    fundedAmount: fundedAmount,
-                }
-                console.log(FundTransferedEvent)
-            }
-        )
-        const txResponse = await connectedContract.contribute({
-            value: ethers.utils.parseEther(ethValueFromContributer),
-        })
+        console.log("campaign reacieved ----------------", campaignAddress)
+        await ConnectToContract(campaignAddress)
 
-        txReciept = await txResponse.wait(2)
-        console.log("transection Recipt -------------", txReciept)
-    } catch (e) {
-        error = e
-    }
-    if (txReciept.status == 1) {
-        retReq = {
-            status: 200,
-            donatedAmount: FundTransferedEvent.fundedAmount,
+        const tx = {
+            to: campaignAddress,
+            value: ethers.utils.parseEther(
+                ethValueFromContributer.toString(),
+                "ether"
+            ),
         }
-    } else {
-        retReq = { status: 400, msg: error }
-    }
 
-    return retReq
+        const txResponse = await signer.sendTransaction(tx)
+
+        let txReciept
+        // await contract.on(
+        //     "FundTransfered",
+        //     (contributerAddress, fundedAmount) => {
+        //         FundTransferedEvent = {
+        //             contributerAddress: contributerAddress,
+        //             fundedAmount: fundedAmount,
+        //         }
+        //         console.log(FundTransferedEvent)
+        //     }
+        // )
+        // console.log("eth value ", ethValueFromContributer)
+
+        // const txResponse = await connectedContract.receive({
+        //     value: ethers.utils.parseEther(ethValueFromContributer.toString()),
+        //     gasLimit: 100000,
+        // })
+
+        txReciept = await txResponse.wait(BlockWaitTime)
+        console.log("transection Recipt -------------", txReciept)
+        if (txReciept.status == 1) {
+            retReq = {
+                status: 200,
+            }
+        } else {
+            retReq = { status: 400, msg: "status failed" }
+        }
+        return retReq
+    } catch (e) {
+        // error = e
+        console.log(e)
+        return { status: 400, msg: String(e) }
+    }
 }
 
 const WithdrawUtil = async (campaignAddress, requestId) => {
@@ -65,7 +80,7 @@ const WithdrawUtil = async (campaignAddress, requestId) => {
             }
         })
         const txResponse = await connectedContract.withdraw(requestId)
-        txReciept = await txResponse.wait(2)
+        txReciept = await txResponse.wait(BlockWaitTime)
     } catch (e) {
         error = e
     }
@@ -88,35 +103,36 @@ const MakeRequestUtil = async (
 ) => {
     ConnectToContract(campaignAddress)
 
-    console.log(`contract address ${campaignAddress}`)
+    console.log("contract address ", campaignAddress)
 
     let durationOfRequest = Math.ceil(durationOfRequestInHours * 60),
         txReciept,
         RequestApplied
 
     try {
-        await contract.on("RequestApplied", (requestIndex) => {
-            RequestApplied = requestIndex.toNumber()
+        // await contract.on("RequestApplied", (requestIndex) => {
+        //     RequestApplied = requestIndex.toNumber()
 
-            console.log(RequestApplied)
-        })
+        //     console.log(RequestApplied)
+        // })
         let txResponse = await connectedContract.makeRequest(
             durationOfRequest,
             withdrawAmount
         )
 
-        txReciept = await txResponse.wait(2)
+        txReciept = await txResponse.wait(BlockWaitTime)
         console.log("----------------")
         console.log(txResponse)
         console.log("----------------")
         console.log(txReciept)
     } catch (e) {
         error = e
+        console.log(error)
     }
 
     if (txReciept.status == 1) {
         console.log("passing Request applied")
-        retReq = { status: 200, requestId: RequestApplied }
+        retReq = { status: 200, msg: txReciept.events[0].args[0].toNumber() }
     } else {
         console.log("Request declinded", error)
         retReq = { status: 400, msg: error }
@@ -126,11 +142,13 @@ const MakeRequestUtil = async (
 }
 
 const StakeInRequestUtil = async (campaignAddress, requestId, voteValue) => {
-    ConnectToContract(campaignAddress)
-
     let txResponse, txReciept
 
     try {
+        console.log("calling to stake")
+        console.log(campaignAddress)
+        console.log("request id -------", requestId)
+        await ConnectToContract(campaignAddress, voteValue)
         if (voteValue === 1) {
             // Accpeterd vote
             txResponse = await connectedContract.stakeInRequest(requestId, 0)
@@ -138,13 +156,14 @@ const StakeInRequestUtil = async (campaignAddress, requestId, voteValue) => {
             txResponse = await connectedContract.stakeInRequest(requestId, 1)
         }
 
-        txReciept = await txResponse.wait(2)
+        txReciept = await txResponse.wait(BlockWaitTime)
         console.log("----------------")
         console.log(txResponse)
         console.log("----------------")
         console.log(txReciept)
     } catch (e) {
         error = e
+        console.log("error is ", JSON.stringify(e))
     }
 
     if (txReciept.status == 1) {
@@ -173,6 +192,23 @@ const GetRequestStatusUtil = async (campaignAddress, requestId) => {
     return requestStatus._hex
 }
 
+const GetMinimumContrbutionLimitUtil = async (campaignAddress) => {
+    console.log("address----------", campaignAddress)
+
+    // provider.getCode(campaignAddress)
+    try {
+        await ConnectToContract(campaignAddress)
+
+        const minContributionLimit = await contract.getMinContributionLimit()
+        console.log("minimum contribution ", minContributionLimit)
+
+        return { status: 200, msg: minContributionLimit }
+    } catch (e) {
+        console.log(e)
+        return { status: 400, msg: error }
+    }
+}
+
 export {
     ContributeUtil,
     WithdrawUtil,
@@ -180,4 +216,5 @@ export {
     StakeInRequestUtil,
     GetRequestInfoUtil,
     GetRequestStatusUtil,
+    GetMinimumContrbutionLimitUtil,
 }

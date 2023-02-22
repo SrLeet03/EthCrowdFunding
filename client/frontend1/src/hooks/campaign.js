@@ -34,9 +34,10 @@ async function getAllCampaign() {
 
 async function getAllRequestsForCampaign(cid) {
     try {
-        const result = await axios.post(`${URL}request/getAllRequestBycid/`, {
-            cid: cid,
-        })
+        console.log("cid , ", cid)
+        const result = await axios.get(
+            `${URL}request/getAllRequestBycid/?cid=${cid}`
+        )
         console.log(result)
         return result
     } catch (err) {

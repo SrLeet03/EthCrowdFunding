@@ -8,11 +8,15 @@ import Mainbody from "./Mainbody"
 import Requestbody from "./Requestbody"
 import { useSelector } from "react-redux"
 
-import { ContributeUtil } from "../../solidityUtils/Campaign"
+import {
+    ContributeUtil,
+    GetMinimumContrbutionLimitUtil,
+} from "../../solidityUtils/Campaign"
 
 export default function FundProfile({ info }) {
     // const { url } = useMatch ();
     const [win, setWin] = useState("overview")
+    const [donAmount, setDonAmount] = useState(null)
 
     //console.log(info) ;
     const profile = useSelector((state) => state.fundr.fundr)
@@ -20,17 +24,31 @@ export default function FundProfile({ info }) {
 
     const url = String(window.location.href)
 
+    const handleChangeDonate = (e) => {
+        setDonAmount(e.target.value)
+    }
     //
     // Need to pass in address and value to donate
     //
-    const handleSubmitDonate = () => {
-        const donate_result = ContributeUtil(profile.addr)
+    const handleSubmitDonate = async () => {
+        console.log("get", donAmount)
+        const donate_result = await ContributeUtil(profile.addr, donAmount)
 
         console.log("donate request result", donate_result)
 
         if (donate_result.status !== 200) {
             console.log("error msg :", donate_result.msg)
+            alert("Failed to donate , error msg :", String(donate_result.msg))
+            return
         }
+        alert("Amount added to funrasier successfully!! Thank you")
+    }
+    const getMinContributionLimit = async () => {
+        console.log("getting min contribution")
+
+        const result = await GetMinimumContrbutionLimitUtil(profile.addr)
+
+        console.log("min contri result ", result)
     }
 
     return (
@@ -85,8 +103,22 @@ export default function FundProfile({ info }) {
                         </Button> */}
                         <br />
                         <br />
+                        <input
+                            type="number"
+                            value={donAmount}
+                            onChange={(e) => {
+                                handleChangeDonate(e)
+                            }}
+                            placeholder="Enter value to donate into this Fundraiser!"
+                        ></input>
                         <Button variant="info" onClick={handleSubmitDonate}>
                             Donate
+                        </Button>
+                        <Button
+                            variant="info"
+                            onClick={getMinContributionLimit}
+                        >
+                            GetMinimumContributionLimit
                         </Button>
                     </div>
 

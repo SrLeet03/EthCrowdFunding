@@ -8,7 +8,7 @@ const networkconfig = {
         name: "localhost",
     },
     5: {
-        name: "georli",
+        name: "goerli",
     },
     5001: {
         name: "mantle",
