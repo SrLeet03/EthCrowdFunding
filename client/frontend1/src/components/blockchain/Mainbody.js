@@ -10,6 +10,8 @@ import "./css/profile.css"
 
 export default function FundProfile({ info }) {
     const profile = useSelector((state) => state.fundr.fundr)
+    const [fundRaised, setFundRaised] = useState("")
+    const [contributers, setContributers] = useState([])
 
     const handleGetContributers = async () => {
         const result = await GetContributorsUtil(profile.addr)
@@ -20,14 +22,8 @@ export default function FundProfile({ info }) {
             )
         }
 
-        let list = await document.getElementById("myList")
-        await result.msg.forEach((item) => {
-            let li = document.createElement("li")
-            li.innerText = item
-            list.appendChild(li)
-        })
+        await setContributers(result.msg)
     }
-    const [fundRaised, setFundRaised] = useState("")
     console.log("profile", profile)
 
     const handleGetTotalFunds = async () => {
@@ -40,6 +36,15 @@ export default function FundProfile({ info }) {
         handleGetTotalFunds()
         handleGetContributers()
     }, [])
+
+    useEffect(() => {
+        let list = document.getElementById("myList")
+        contributers.forEach((item) => {
+            let li = document.createElement("li")
+            li.innerText = item
+            list.appendChild(li)
+        })
+    }, [contributers])
 
     return (
         <div>

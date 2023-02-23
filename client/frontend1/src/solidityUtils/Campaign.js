@@ -6,7 +6,7 @@ let contract, connectedContract, signer, provider
 var error, retReq
 
 async function ConnectToContract(campaignAddress) {
-    window.ethereum.enable()
+    await window.ethereum.enable()
     provider = new ethers.providers.Web3Provider(window.ethereum)
     if (!provider) {
         //return { status: 400, msg: "Provider/MetaMask was not recoganized" }
@@ -35,22 +35,6 @@ const ContributeUtil = async (campaignAddress, ethValueFromContributer) => {
         const txResponse = await signer.sendTransaction(tx)
 
         let txReciept
-        // await contract.on(
-        //     "FundTransfered",
-        //     (contributerAddress, fundedAmount) => {
-        //         FundTransferedEvent = {
-        //             contributerAddress: contributerAddress,
-        //             fundedAmount: fundedAmount,
-        //         }
-        //         console.log(FundTransferedEvent)
-        //     }
-        // )
-        // console.log("eth value ", ethValueFromContributer)
-
-        // const txResponse = await connectedContract.receive({
-        //     value: ethers.utils.parseEther(ethValueFromContributer.toString()),
-        //     gasLimit: 100000,
-        // })
 
         txReciept = await txResponse.wait(BlockWaitTime)
         console.log("transection Recipt -------------", txReciept)
@@ -172,7 +156,7 @@ const StakeInRequestUtil = async (campaignAddress, requestId, voteValue) => {
 const GetRequestInfoUtil = async (campaignAddress, requestId) => {
     ConnectToContract(campaignAddress)
 
-    const requestInfo = await connectedContract.getRequestInfo(requestId)
+    const requestInfo = await contract.getRequestInfo(requestId)
 
     console.log(`Request Info ${requestInfo}, Data type is ${typeof requestId}`)
     return { requestInfo }
@@ -181,7 +165,7 @@ const GetRequestInfoUtil = async (campaignAddress, requestId) => {
 const GetRequestStatusUtil = async (campaignAddress, requestId) => {
     ConnectToContract(campaignAddress)
 
-    const requestStatus = await connectedContract.getRequestStatus()
+    const requestStatus = await contract.getRequestStatus()
 
     console.log(`request status ${requestStatus}`)
     return requestStatus._hex
@@ -205,12 +189,12 @@ const GetMinimumContrbutionLimitUtil = async (campaignAddress) => {
 }
 
 const GetContributorsUtil = async (campaignAddress) => {
-    console.log("Getting contributers-----------", campaignAddress)
+    await console.log("Getting contributers-----------", campaignAddress)
 
     try {
         await ConnectToContract(campaignAddress)
 
-        const contributers = await connectedContract.getContributors()
+        const contributers = await contract.getContributors()
 
         console.log("contributers ----- ", contributers)
         return { status: 200, msg: contributers }
@@ -227,7 +211,7 @@ const GetTotalFundsRaisedUtil = async (campaignAddress) => {
     try {
         await ConnectToContract(campaignAddress)
 
-        const amount = await connectedContract.getTotalFund()
+        const amount = await contract.getTotalFund()
         const amountInEth = await ethers.utils.formatEther(amount)
 
         console.log(amount, amountInEth)
