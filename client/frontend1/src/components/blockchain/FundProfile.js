@@ -114,12 +114,6 @@ export default function FundProfile({ info }) {
                         <Button variant="info" onClick={handleSubmitDonate}>
                             Donate
                         </Button>
-                        <Button
-                            variant="info"
-                            onClick={getMinContributionLimit}
-                        >
-                            GetMinimumContributionLimit
-                        </Button>
                     </div>
 
                     {win === "overview" ? (

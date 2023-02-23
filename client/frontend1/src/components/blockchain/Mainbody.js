@@ -1,42 +1,84 @@
-import React , {useState , useEffect} from 'react'
-import { useSelector } from 'react-redux'
+import React, { useState, useEffect } from "react"
+import { useSelector } from "react-redux"
+import {
+    GetContributorsUtil,
+    GetTotalFundsRaisedUtil,
+} from "../../solidityUtils/Campaign"
 
-import './css/profile.css'
+import "./css/profile.css"
 
 export default function FundProfile({ info }) {
-
-     
-    
     const profile = useSelector((state) => state.fundr.fundr)
 
-   console.log('profile' , profile);
+    const handleGetContributers = async () => {
+        const result = await GetContributorsUtil(profile.addr)
+        console.log(result.msg)
+        if (result.status !== 200) {
+            return alert("error to get contributers : ", result.msg)
+        }
+
+        let list = await document.getElementById("myList")
+        await result.msg.forEach((item) => {
+            let li = document.createElement("li")
+            li.innerText = item
+            list.appendChild(li)
+        })
+    }
+    const [fundRaised, setFundRaised] = useState(0)
+    console.log("profile", profile)
+
+    const handleGetTotalFunds = async () => {
+        const result = await GetTotalFundsRaisedUtil(profile.addr)
+        setFundRaised(result)
+    }
 
     return (
         <div>
+            <h1>{profile.title}</h1>
+            <div className="job-body">
+                <p>Contract Address : {profile.addr}</p>
 
-            
-                    <h1>{profile.title}</h1>
-                    <div className="job-body">
-                        
-                       
-                        <ul>
-                            <li>Dear friends,</li><br/>
-                            <br/>
-                            <b>{profile.tagline}</b>
-                            
-                        </ul>
-                        <h2>Important Notes</h2>
-                        <p>We look to positively impact the lives we touch by making a difference each day. Change drives our business each and every day and our culture allows us to manage and embrace change by establishing core values:</p>
-                        <div className="details">
-                            <p className="job-payrange"><strong>Amount :</strong>{profile.amount} INR</p>
-                            <p className="date"><strong>Posted</strong>: <span itemprop="datePosted">{profile.time},{profile.date}</span></p>
-                            <p className="job-status"><strong>Fundraiser Category</strong>: <span itemprop="employmentType">{profile.tag}</span></p>
-                        </div>
+                <ul>
+                    <li>Dear friends,</li>
+                    <br />
+                    <br />
+                    <b>{profile.tagline}</b>
+                </ul>
+                <h2>Important Notes</h2>
+                <p>
+                    We look to positively impact the lives we touch by making a
+                    difference each day. Change drives our business each and
+                    every day and our culture allows us to manage and embrace
+                    change by establishing core values:
+                </p>
+                <div className="details">
+                    <p className="job-payrange">
+                        <strong>Amount Needed :</strong>
+                        {profile.amount} INR
+                    </p>
+                    <p className="date">
+                        <strong>Posted</strong>:{" "}
+                        <span itemprop="datePosted">
+                            {profile.time},{profile.date}
+                        </span>
+                    </p>
+                    <p className="job-status">
+                        <strong>Fundraiser Category</strong>:{" "}
+                        <span itemprop="employmentType">{profile.tag}</span>
+                    </p>
 
-                    </div>
-
+                    <p>
+                        <strong>Fund Rised</strong>:{fundRaised}
+                    </p>
                 </div>
-            
-        
+                <div>
+                    <h2>Recent Contributers</h2>
+                    <button onClick={handleGetContributers}>
+                        List Contributers
+                    </button>
+                    <ul id="myList"></ul>
+                </div>
+            </div>
+        </div>
     )
 }

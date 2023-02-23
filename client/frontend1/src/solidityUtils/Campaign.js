@@ -204,6 +204,39 @@ const GetMinimumContrbutionLimitUtil = async (campaignAddress) => {
     }
 }
 
+const GetContributorsUtil = async (campaignAddress) => {
+    console.log("Getting contributers-----------", campaignAddress)
+
+    try {
+        await ConnectToContract(campaignAddress)
+
+        const contributers = await connectedContract.getContributors()
+
+        console.log("contributers ----- ", contributers)
+        return { status: 200, msg: contributers }
+    } catch (e) {
+        error = e
+        console.log(error)
+        return { status: 400, msg: error }
+    }
+}
+
+const GetTotalFundsRaisedUtil = async (campaignAddress) => {
+    console.log("Getting total fund raised-------------", campaignAddress)
+
+    try {
+        await ConnectToContract(campaignAddress)
+
+        const amount = await connectedContract.getTotalFund()
+
+        return { status: 200, msg: amount.toNumber() }
+    } catch (e) {
+        error = e
+        console.log(error)
+        return { status: 400, msg: error }
+    }
+}
+
 export {
     ContributeUtil,
     WithdrawUtil,
@@ -212,4 +245,6 @@ export {
     GetRequestInfoUtil,
     GetRequestStatusUtil,
     GetMinimumContrbutionLimitUtil,
+    GetContributorsUtil,
+    GetTotalFundsRaisedUtil,
 }
