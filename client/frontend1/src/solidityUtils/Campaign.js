@@ -228,8 +228,11 @@ const GetTotalFundsRaisedUtil = async (campaignAddress) => {
         await ConnectToContract(campaignAddress)
 
         const amount = await connectedContract.getTotalFund()
+        const amountInEth = await ethers.utils.formatEther(amount)
 
-        return { status: 200, msg: amount.toNumber() }
+        console.log(amount, amountInEth)
+
+        return { status: 200, msg: amountInEth }
     } catch (e) {
         error = e
         console.log(error)

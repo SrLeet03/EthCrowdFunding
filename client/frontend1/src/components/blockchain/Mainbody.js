@@ -1,3 +1,4 @@
+import { ethers } from "ethers"
 import React, { useState, useEffect } from "react"
 import { useSelector } from "react-redux"
 import {
@@ -14,7 +15,9 @@ export default function FundProfile({ info }) {
         const result = await GetContributorsUtil(profile.addr)
         console.log(result.msg)
         if (result.status !== 200) {
-            return alert("error to get contributers : ", result.msg)
+            return alert(
+                "error to get contributers : " + JSON.stringify(result.msg)
+            )
         }
 
         let list = await document.getElementById("myList")
@@ -24,13 +27,19 @@ export default function FundProfile({ info }) {
             list.appendChild(li)
         })
     }
-    const [fundRaised, setFundRaised] = useState(0)
+    const [fundRaised, setFundRaised] = useState("")
     console.log("profile", profile)
 
     const handleGetTotalFunds = async () => {
         const result = await GetTotalFundsRaisedUtil(profile.addr)
-        setFundRaised(result)
+        console.log(result)
+        await setFundRaised(result.msg)
     }
+
+    useEffect(() => {
+        handleGetTotalFunds()
+        handleGetContributers()
+    }, [])
 
     return (
         <div>
@@ -68,14 +77,11 @@ export default function FundProfile({ info }) {
                     </p>
 
                     <p>
-                        <strong>Fund Rised</strong>:{fundRaised}
+                        <strong>Fund Rised</strong> : {fundRaised} BIT
                     </p>
                 </div>
                 <div>
                     <h2>Recent Contributers</h2>
-                    <button onClick={handleGetContributers}>
-                        List Contributers
-                    </button>
                     <ul id="myList"></ul>
                 </div>
             </div>
