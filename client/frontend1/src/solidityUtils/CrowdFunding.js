@@ -1,20 +1,28 @@
-import { crowdFundingAddresses, crowdFundingAbi } from "../Constants/index.js"
-import { useEffect, useState } from "react"
+import {
+    crowdFundingAddresses,
+    crowdFundingAbi,
+    BlockWaitTime,
+} from "../Constants/index.js"
 import { ethers } from "ethers"
 
-let contract, connectedContract, signer
+let contract, connectedContract, signer, provider
+var error, retReq
 
 async function ConnectToContract() {
     // provider = auth.provider
+
+    console.log("Calling connect contract")
     window.ethereum.enable()
-    const provider = new ethers.providers.Web3Provider(window.ethereum)
-    if (!provider) {
-        // not provider found
-        return { status: 400 }
-    }
-    signer = provider.getSigner()
-    // const { chainId } = provider.getNetwork()
-    const chainId = 5001 // Mantle chain ID
+    provider = new ethers.providers.Web3Provider(window.ethereum)
+    // if (!provider) {
+    // not provider found
+    //return { status: 400, msg: "Provider/'Metamask not recoganizer" }
+    // }
+    signer = await provider.getSigner()
+    const { chainId } = await provider.getNetwork()
+
+    console.log("chain id ", chainId)
+    // chainId = 31337 // Mantle chain ID
 
     const crowdFindingAddress =
         chainId in crowdFundingAddresses
@@ -28,47 +36,127 @@ async function ConnectToContract() {
     connectedContract = await contract.connect(signer)
 }
 
-async function CreateCampaignUtil(campaignGoal, address, minContribution = 1) {
-    ConnectToContract()
+// async function CreateCampaignUtil(campaignGoal, address, minContribution = 0) {
+//     return new Promise(async (resolve, reject) => {
+//         try {
+//             await ConnectToContract()
 
-    if (address !== signer) {
-        return { status: 400 }
-    }
-    console.log(`address ${address} signer ${signer}`)
-    let camapignCreatedEvent
-    // Listening to event
-    contract.on(
-        "CampaignCreated",
-        (ownerAddress, campaignId, campaignAddress) => {
-            camapignCreatedEvent = {
-                owner: ownerAddress,
-                campaignId: campaignId,
-                campaignAddress: campaignAddress,
+//             let txReciept, camapignCreatedEvent
+
+//             let accounts = await provider.send("eth_requestAccounts", [])
+
+//             let account = accounts[0]
+
+//             console.log("Running----------")
+//             contract.on(
+//                 "CampaignCreated",
+//                 (ownerAddress, campaignIndex, campaignAddress) => {
+//                     camapignCreatedEvent = {
+//                         owner: ownerAddress,
+//                         campaignId: campaignIndex.toNumber(),
+//                         campaignAddress: campaignAddress,
+//                     }
+//                     resolve({
+//                         status: 200,
+//                         address: camapignCreatedEvent,
+//                     })
+//                     console.log("camapignCreatedEvent --", camapignCreatedEvent)
+//                 }
+//             )
+
+//             const txResponse = await connectedContract.createCampaign(
+//                 campaignGoal,
+//                 minContribution
+//             )
+
+//             console.log(txResponse)
+
+//             txReciept = await txResponse.wait(2)
+//             console.log(txReciept)
+
+//             console.log(camapignCreatedEvent)
+
+//             if (txReciept.status == 1) {
+//                 console.log(camapignCreatedEvent)
+//                 retReq = {
+//                     status: 200,
+//                     address: camapignCreatedEvent.campaignAddress,
+//                 }
+//                 console.log(retReq)
+//             } else {
+//                 retReq = { status: 400, msg: "txRecipet status is 0" }
+//             }
+//         } catch (e) {
+//             console.log(e)
+//             error = e
+//             return { status: 400, msg: error }
+//         }
+//     })
+// }
+
+let eventPromise = new Promise((resolve, reject) => {
+    // This promise is resolved when the "CampaignCreated" event is triggered
+})
+
+async function CreateCampaignUtil(campaignGoal, address, minContribution = 0) {
+    await ConnectToContract()
+
+    let txReciept, camapignCreatedEvent
+
+    try {
+        let accounts = await provider.send("eth_requestAccounts", [])
+
+        let account = accounts[0]
+
+        // if (
+        //     address.toString().toUpperCase() ===
+        //     account.toString().toUpperCase()
+        // ) {
+        //     return {
+        //         status: 400,
+        //         msg: "address does not match with metamask wallet",
+        //     }
+        // }
+
+        await contract.on(
+            "CampaignCreated",
+            (ownerAddress, campaignIndex, campaignAddress) => {
+                camapignCreatedEvent = {
+                    owner: ownerAddress,
+                    campaignId: campaignIndex.toNumber(),
+                    campaignAddress: campaignAddress,
+                }
+                console.log(camapignCreatedEvent)
             }
-            console.log(JSON.stringify(camapignCreatedEvent, null, 4))
+        )
+        const txResponse = await connectedContract.createCampaign(
+            campaignGoal,
+            minContribution
+        )
+
+        console.log(txResponse)
+
+        txReciept = await txResponse.wait(BlockWaitTime)
+
+        console.log(txReciept)
+    } catch (e) {
+        console.log(error)
+        error = e
+    }
+    // console.log(txReciept)
+
+    if (txReciept.status == 1) {
+        console.log(camapignCreatedEvent)
+        retReq = {
+            status: 200,
+            address: txReciept.events[0].address,
         }
-    )
-
-    const txResponse = await connectedContract.createCampaign(
-        campaignGoal,
-        minContribution
-    )
-    const txReciept = await txResponse.wait(6)
-    console.log(txReciept)
-
-    return {
-        status: txReciept.status,
-        address: camapignCreatedEvent.campaignAddress,
+        console.log(retReq)
+    } else {
+        retReq = { status: 400, msg: error }
     }
 
-    // const connectContract = await contract.connect(signer)
-
-    // const txResponse = await connectContract.createCampaign(
-    //     2,
-    //     2
-    // )
-    // const txReciept = await txResponse.wait(6) ;
-    // console.log(txReciept) ;
+    return retReq
 }
 
 async function GetCampaign(owner, campaignId) {
@@ -76,8 +164,10 @@ async function GetCampaign(owner, campaignId) {
         owner,
         campaignId
     )
-    console.log(campaignAddress)
-    return campaignAddress
+
+    const campaignAddressString = campaignAddress.toHexString()
+
+    return { status: 200, campaignAddressString }
 }
 
 const GetAllCampaignOfOwner = async (owner) => {
@@ -85,86 +175,15 @@ const GetAllCampaignOfOwner = async (owner) => {
 }
 
 const GetTotalCampaignCreated = async () => {
-    const totalCampaign = await connectedContract.getTotalCampaign()
+    var totalCampaign = await connectedContract.getTotalCampaign()
+    totalCampaign = totalCampaign.toNumber()
     return totalCampaign
 }
 
-export { ConnectToContract, CreateCampaignUtil }
-
-// getConnection() ;
-
-// export default function CrowdFunding() {
-//     const [connectedContract, setContract] = useState(undefined)
-//     const [accounts, setAccounts] = useState(undefined)
-
-//     useEffect(() => {
-//         const init = async () => {
-//             let provider
-//             try {
-//                 provider = auth.provider
-//                 const connected = await auth.isLoggedIn()
-//                 console.log({ connected })
-//             } catch (e) {
-//                 // Handle exception case
-//             }
-
-//             const signer = provider.getSigner()
-//             const accounts = await ethers.getAccount()
-//             const { chainId } = provider.getNetwork()
-
-//             const crowdFindingAddress =
-//                 chainId in crowdFundingAddresses
-//                     ? crowdFundingAddresses[chainId][0]
-//                     : null
-
-//             const contract = new ethers.Contract(
-//                 crowdFindingAddress,
-//                 crowdFundingAbi,
-//                 provider
-//             )
-//             const connectContract = await contract.connect(signer)
-
-//             setContract(connectContract)
-//             setAccounts(accounts)
-
-//             try {
-//             } catch (error) {
-//                 alert(
-//                     `Failed to load web3, accounts, or contract. Did you migrate the contract or install MetaMask? Check console for details.`
-//                 )
-//                 console.error(error)
-//             }
-//         }
-//         init()
-//     }, [])
-
-//     const CreateCampaign = async (campaignGoal, minContribution) => {
-//         const txResponse = await connectedContract.createCampaign(
-//             campaignGoal,
-//             minContribution
-//         )
-//         const txReciept = await txResponse.wait(6)
-//     }
-
-//     const GetCampaign = async (owner, campaignId) => {
-//         const campaignAddress = await connectedContract.getCampaign(
-//             owner,
-//             campaignId
-//         )
-//         return campaignAddress
-//     }
-
-//     const GetAllCampaignOfOwner = async (owner) => {
-//         await connectedContract.getAllCampaignOfOwner(owner)
-//     }
-
-//     const GetTotalCampaignCreated = async () => {
-//         const totalCampaign = await connectedContract.getTotalCampaign()
-//         return totalCampaign
-//     }
-// }
-
-// CreateCampaign().then((src) => {
-
-//     console.log(src)
-// })
+export {
+    ConnectToContract,
+    CreateCampaignUtil,
+    GetCampaign,
+    GetAllCampaignOfOwner,
+    GetTotalCampaignCreated,
+}

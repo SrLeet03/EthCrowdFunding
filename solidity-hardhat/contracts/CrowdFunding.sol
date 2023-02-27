@@ -18,7 +18,7 @@ contract CrowdFunding {
     function createCampaign(
         uint256 _campaignGoal,
         uint256 _minContribution
-    ) public {
+    ) public returns (address) {
         Campaign campaign = new Campaign(_campaignGoal, _minContribution);
         campaign.transferOwnerShip(msg.sender);
 
@@ -29,9 +29,10 @@ contract CrowdFunding {
 
         emit CampaignCreated(
             msg.sender,
-            s_campaigns[msg.sender].length,
+            s_campaigns[msg.sender].length - 1,
             address(campaign)
         );
+        return address(campaign);
     }
 
     function getCampaign(

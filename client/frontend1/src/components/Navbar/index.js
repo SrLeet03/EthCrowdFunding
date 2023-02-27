@@ -7,6 +7,7 @@ NavMenu,
 NavBtn,
 NavBtnLink,
 } from './NavbarElements';
+import './style.css' ;
 
 
 import { FaAffiliatetheme } from "react-icons/fa";
@@ -59,7 +60,7 @@ return (
 			<FaFirefoxBrowser/>Events
 		</NavLink>
 		<NavLink to='/fundraisers' activeStyle>
-			<FaAmazonPay/>'   'Fundraisers
+			<FaAmazonPay/>Fundraisers
 		</NavLink>
 		
 		<NavLink to='/blogs' activeStyle>

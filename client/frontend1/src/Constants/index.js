@@ -2,8 +2,10 @@
 // const crowdFundingAbi = require("./abi.json")
 // const campaignAbi = require("./campaignAbi.json")
 
-import crowdFundingAddresses from './crowdFundingAddress.json'
-import crowdFundingAbi from './crowdFundingAbi.json' ;
-import campaign from './campaignAbi.json' ;
+import crowdFundingAddresses from "./crowdFundingAddress.json"
+import crowdFundingAbi from "./crowdFundingAbi.json"
+import campaignAbi from "./campaignAbi.json"
 
-export {crowdFundingAddresses , crowdFundingAbi , campaign} ;
+const BlockWaitTime = 1
+
+export { crowdFundingAddresses, crowdFundingAbi, campaignAbi, BlockWaitTime }

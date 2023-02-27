@@ -27,7 +27,7 @@ export default function FundraiseList() {
 
         getAllCampaign().then((result)=>{
             console.log('res ->' , result.data) ;
-            setAllf(result.data);
+          if(result.data !== undefined && result.data.length > 0)  setAllf(result.data);
             dispatch(setFundrs(result.data));
         }).catch((serr)=>{
             alert("failed to get campaigns!");
@@ -105,7 +105,8 @@ export default function FundraiseList() {
                                 tag  :value.category,
                                 amount:value.donation_target,
                                 days : value.days,
-                                tagline: value.description
+                                tagline: value.description,
+                                addr : value.public_key
                             }
                              return <FundCard info={prop} />;
                             // return <Parent/>

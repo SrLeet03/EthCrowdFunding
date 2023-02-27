@@ -18,7 +18,7 @@ module.exports = async (hre) => {
     const chainId = network.config.chainId
 
     log("----------")
-    log(`deployer ${deployer1}`)
+    log(`deployer ${deployer2}`)
     log("----------")
 
     // const library = await deploy("CampaignLib", {

@@ -1,1 +1,2 @@
-export const URL ="https://63f23134d54a535e1611820a--ethbb.netlify.app/.netlify/functions/app/"
+export const URL =
+    "https://63f2615cca21e67ca9823546--ethbb.netlify.app/.netlify/functions/app/"

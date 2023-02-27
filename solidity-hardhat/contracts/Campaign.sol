@@ -4,15 +4,17 @@ pragma solidity ^0.8.8;
 
 import "./Stake.sol";
 
-error Campaign__SendMinFund();
-error Campaign__NotOwner();
-error Campaign__NotEnoughToWithdraw();
+error Campaign__SendMinFund(uint256 value, uint256 minContribution);
+error Campaign__NotOwner(address sender, address owner);
+error Campaign__NotEnoughToWithdraw(
+    uint256 amountNeedToWithdraw,
+    uint256 contractBalance
+);
 error Campaign__RequestIsUnderProcess();
 error Campaign__RequestRejected();
-error Campaign__NotAnEligiableContributer();
 error Campaign__ContributionTransactionFailed();
 error Campaign__WithdrawTransactionFailed();
-error Campaign__NoEnoughAmount();
+error Campaign__NotEnoughFundToVote();
 error Campaign__NotAContributer();
 
 contract Campaign is Stake {
@@ -28,7 +30,12 @@ contract Campaign is Stake {
     event OwnershipTransfered(address from, address to);
     event FundTransfered(address from, uint256 fundedAmount);
     event RequestApplied(uint256 requestIndex);
-    event RequestResult(uint256 requestIndex, bool approved);
+    event RequestResult(
+        uint256 requestIndex,
+        bool approved,
+        uint256 acceptedWeightage,
+        uint256 rejectedWeightage
+    );
 
     constructor(uint256 campaignGoal, uint256 minContribution) {
         i_campaignGoal = campaignGoal;
@@ -38,7 +45,7 @@ contract Campaign is Stake {
 
     modifier onlyOwner() {
         if (msg.sender != s_owner) {
-            revert Campaign__NotOwner();
+            revert Campaign__NotOwner(msg.sender, s_owner);
         }
         _;
     }
@@ -67,16 +74,15 @@ contract Campaign is Stake {
         _;
     }
 
-    function contribute() public payable {
-        if (msg.value < i_minContribution) {
-            revert Campaign__SendMinFund();
-        }
-        (bool sent, ) = address(this).call{value: msg.value}("");
+    modifier checkMinContribute() {
+        require(
+            msg.value >= i_minContribution,
+            "Increase the contribution amount"
+        );
+        _;
+    }
 
-        if (!sent) {
-            revert Campaign__ContributionTransactionFailed();
-        }
-
+    receive() external payable checkMinContribute {
         emit FundTransfered(msg.sender, msg.value);
 
         s_contributerFund[msg.sender] += msg.value;
@@ -89,7 +95,7 @@ contract Campaign is Stake {
     ) public payable onlyOwner permissionIssued(requestIndex) {
         uint256 amount = getRequestedAmount(s_requests[requestIndex]);
         if (address(this).balance < amount) {
-            revert Campaign__NotEnoughToWithdraw();
+            revert Campaign__NotEnoughToWithdraw(amount, address(this).balance);
         }
         (bool sent, ) = s_owner.call{value: amount}("");
 
@@ -104,7 +110,7 @@ contract Campaign is Stake {
     function makeRequest(
         uint256 _durationOfRequest,
         uint256 _withdrawAmount
-    ) public onlyOwner {
+    ) public onlyOwner returns (uint256) {
         // Stake happens here
 
         Request storage request = s_requests.push();
@@ -117,9 +123,11 @@ contract Campaign is Stake {
         request.campaignAddress = address(this);
         request.currentStatus = CampaignLib.permission.PROCESSING;
         emit RequestApplied(s_requests.length - 1);
+
+        return (s_requests.length - 1);
     }
 
-    function stakeInRequest(uint256 requestId, CampaignLib.vote myVote) public {
+    function stakeInRequest(uint256 requestId, bool myVote) public {
         uint256 weightage = calcualtePercent(
             s_contributerFund[msg.sender],
             10000,
@@ -134,7 +142,9 @@ contract Campaign is Stake {
         emit RequestResult(
             requestIndex,
             getPermissionStatus(s_requests[requestIndex]) ==
-                CampaignLib.permission.ACCEPTED
+                CampaignLib.permission.ACCEPTED,
+            s_requests[requestIndex].totalAcceptVote,
+            s_requests[requestIndex].totalRejectVote
         );
     }
 
@@ -187,8 +197,42 @@ contract Campaign is Stake {
         uint256 totalAmount
     ) internal pure returns (uint256) {
         if (amount * bps < totalAmount) {
-            revert Campaign__NoEnoughAmount();
+            revert Campaign__NotEnoughFundToVote();
         }
         return (amount * bps) / totalAmount;
+    }
+
+    function getRequestStatus(uint256 requestId) public view returns (uint32) {
+        return uint32(s_requests[requestId].currentStatus);
+    }
+
+    bool amountRecieved;
+
+    function getRequestInfo(
+        uint256 requestId
+    )
+        public
+        view
+        returns (uint256, uint256, uint256, uint32, uint256, uint256, bool)
+    {
+        return (
+            s_requests[requestId].requestedAmount,
+            s_requests[requestId].requestedTime,
+            s_requests[requestId].durationOfRequest,
+            uint32(s_requests[requestId].currentStatus),
+            s_requests[requestId].totalAcceptVote,
+            s_requests[requestId].totalRejectVote,
+            s_requests[requestId].amountRecieved
+        );
+    }
+
+    function getMinContributionLimit() public view returns (uint256) {
+        return i_minContribution;
+    }
+
+    function getTimeLeftForRequest(
+        uint256 requestId
+    ) public view returns (uint256) {
+        return timeLeft(s_requests[requestId]);
     }
 }
